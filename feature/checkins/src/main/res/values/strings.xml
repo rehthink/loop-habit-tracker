@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ci_title">Check in</string>
+    <string name="ci_mood_q">How are you feeling?</string>
+    <string name="ci_energy_q">How\'s your energy?</string>
+    <string name="ci_mood_1">Very low</string>
+    <string name="ci_mood_2">Low</string>
+    <string name="ci_mood_3">Okay</string>
+    <string name="ci_mood_4">Good</string>
+    <string name="ci_mood_5">Great</string>
+    <string name="ci_note">Anything behind it? (optional)</string>
+    <string name="ci_save">Save check-in</string>
+    <string name="ci_saved">Saved. Thanks for checking in.</string>
+    <string name="ci_today">Today so far</string>
+    <string name="ci_entry">%1$s: mood %2$d, energy %3$s</string>
+    <string name="ci_no_energy">not given</string>
+    <string name="ci_journal">One line about today</string>
+    <string name="ci_journal_hint">Today I…</string>
+    <string name="ci_journal_save">Save line</string>
+    <string name="ci_journal_saved">Saved</string>
+    <string name="ci_journal_recent">Recent lines</string>
+    <string name="slot_morning">Morning</string>
+    <string name="slot_afternoon">Afternoon</string>
+    <string name="slot_night">Evening</string>
+
+    <string name="hl_title">Health log</string>
+    <string name="hl_issues">Feeling unwell</string>
+    <string name="hl_no_issues">Nothing logged. Logging when you\'re unwell helps Loop explain off days.</string>
+    <string name="hl_add_issue">Log how you feel</string>
+    <string name="hl_issue_name">What\'s wrong? e.g. cold, headache</string>
+    <string name="hl_issue_label">Issue</string>
+    <string name="hl_severity">How bad, 1 to 5</string>
+    <string name="hl_since">Since %1$s</string>
+    <string name="hl_from_to">%1$s to %2$s</string>
+    <string name="hl_better">I\'m better</string>
+    <string name="hl_medicines">Medicines</string>
+    <string name="hl_no_medicines">No medicines. Add one to get a reminder you can tick off from the notification.</string>
+    <string name="hl_add_medicine">Add a medicine</string>
+    <string name="hl_med_name">Medicine</string>
+    <string name="hl_med_dose">Dose, e.g. 1 tablet</string>
+    <string name="hl_med_times">Reminder times</string>
+    <string name="hl_med_add_time">Add a time</string>
+    <string name="hl_med_delete">Delete %1$s</string>
+    <string name="hl_med_taken_today">Taken today at %1$s</string>
+    <string name="hl_med_mark">Mark taken</string>
+    <string name="hl_save">Save</string>
+    <string name="hl_cancel">Cancel</string>
+    <string name="hl_gate_notify">Turn on notifications to get medicine reminders.</string>
+
+    <string name="wt_title">Weight</string>
+    <string name="wt_input">Today\'s weight (kg)</string>
+    <string name="wt_save">Save weight</string>
+    <string name="wt_history">History</string>
+    <string name="wt_empty">No weigh-ins yet. Once a week is plenty.</string>
+    <string name="wt_change">%1$s kg since %2$s</string>
+    <string name="wt_kg">%1$s kg</string>
+</resources>

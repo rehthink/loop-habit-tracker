@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Loop today</string>
+    <string name="widget_description">Your four rings at a glance, with one-tap water, meal and mood logging.</string>
+    <string name="widget_move">Move</string>
+    <string name="widget_sleep">Sleep</string>
+    <string name="widget_screen">Screen</string>
+    <string name="widget_fuel">Fuel</string>
+    <string name="widget_water">+1 water</string>
+    <string name="widget_meal">Snap meal</string>
+    <string name="widget_mood">Mood</string>
+    <string name="widget_none">–</string>
+</resources>

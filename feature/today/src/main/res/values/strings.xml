@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="today_good_morning">Good morning</string>
+    <string name="today_good_afternoon">Good afternoon</string>
+    <string name="today_good_evening">Good evening</string>
+
+    <string name="today_no_data">No data yet</string>
+    <plurals name="today_steps">
+        <item quantity="one">%1$,d step</item>
+        <item quantity="other">%1$,d steps</item>
+    </plurals>
+    <string name="today_kcal">%1$,d kcal</string>
+    <string name="today_screen_of">%1$s of %2$s</string>
+    <plurals name="today_glasses">
+        <item quantity="one">%1$d glass</item>
+        <item quantity="other">%1$d glasses</item>
+    </plurals>
+    <string name="today_setup_title">Let Loop start tracking</string>
+    <string name="today_setup_body">Waiting for: %1$s</string>
+    <string name="today_setup_action">Set up</string>
+    <string name="today_challenge_progress">%1$d of %2$d done</string>
+    <string name="today_challenge_done">Done! Nicely done this week.</string>
+
+    <string name="today_score_title">Habit score</string>
+    <string name="today_score_empty">Your score shows up after your first full day.</string>
+    <string name="today_score_hint">Out of 100, from all four rings.</string>
+
+    <string name="today_insight_title">Today\'s insight</string>
+    <string name="today_insight_empty">Loop is getting to know your routine. Your first insight arrives in a few days.</string>
+
+    <string name="today_challenge_title">This week\'s challenge</string>
+    <string name="today_challenge_empty">Challenges start after your first week, picked from the area that needs the most love.</string>
+</resources>

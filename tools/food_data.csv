@@ -1,0 +1,184 @@
+name,aliases,unit,kcal,grams,protein,carbs,fat
+Roti,chapati|chapatti|phulka|fulka|wheat roti|indian bread,PIECE,104,40,3.1,18.0,2.4
+Ghee roti,ghee chapati|butter roti,PIECE,140,45,3.1,18.0,6.5
+Paratha,plain paratha|parantha|lachha paratha,PIECE,220,70,4.5,30.0,9.0
+Aloo paratha,potato paratha|aloo parantha,PIECE,290,110,6.0,40.0,11.5
+Paneer paratha,paneer parantha,PIECE,320,110,11.0,34.0,15.0
+Gobi paratha,cauliflower paratha,PIECE,260,110,6.0,36.0,10.0
+Methi thepla,thepla|methi paratha,PIECE,120,40,3.0,16.0,5.0
+Puri,poori,PIECE,100,25,1.8,11.0,5.6
+Bhatura,bhature,PIECE,300,80,6.0,40.0,13.0
+Naan,plain naan,PIECE,260,90,8.0,45.0,5.0
+Butter naan,butter nan,PIECE,320,95,8.5,46.0,11.0
+Garlic naan,garlic nan,PIECE,300,95,8.5,47.0,8.5
+Tandoori roti,tandoori chapati,PIECE,130,50,4.0,26.0,1.0
+Kulcha,amritsari kulcha|aloo kulcha,PIECE,280,100,7.0,45.0,8.0
+Missi roti,besan roti,PIECE,150,50,6.0,22.0,4.5
+Bajra roti,bajra rotla|pearl millet roti,PIECE,120,40,3.2,22.0,2.0
+Jowar roti,jowar bhakri|sorghum roti,PIECE,110,40,3.0,23.0,0.8
+Makki roti,makki di roti|corn roti,PIECE,150,50,3.0,28.0,3.5
+Bread slice,white bread|bread|sandwich bread,PIECE,70,27,2.3,13.0,0.9
+Brown bread slice,brown bread|whole wheat bread,PIECE,65,27,3.0,11.5,1.0
+Pav,pao|bun|ladi pav,PIECE,120,40,3.6,22.0,1.8
+Steamed rice,rice|plain rice|white rice|chawal|boiled rice,KATORI,195,150,4.0,43.0,0.4
+Brown rice,brown chawal,KATORI,165,150,3.8,35.0,1.3
+Jeera rice,cumin rice,KATORI,250,150,4.2,44.0,6.0
+Veg pulao,pulao|vegetable pulao|pulav,KATORI,240,150,5.0,40.0,6.5
+Veg biryani,vegetable biryani,PLATE,520,300,11.0,80.0,17.0
+Chicken biryani,biryani|hyderabadi biryani|murgh biryani,PLATE,650,320,30.0,75.0,24.0
+Mutton biryani,gosht biryani,PLATE,720,320,32.0,72.0,32.0
+Egg biryani,anda biryani,PLATE,560,300,20.0,74.0,20.0
+Curd rice,dahi chawal|thayir sadam|mosaru anna,KATORI,210,180,6.0,32.0,6.0
+Lemon rice,chitranna|nimbu chawal,KATORI,260,150,4.5,42.0,8.0
+Tamarind rice,puliyogare|puliodarai,KATORI,280,150,4.5,44.0,9.5
+Khichdi,khichri|moong dal khichdi,KATORI,220,180,8.0,36.0,5.0
+Fried rice,veg fried rice,PLATE,450,250,9.0,70.0,14.0
+Chicken fried rice,egg fried rice,PLATE,560,280,22.0,72.0,18.0
+Dal,daal|dhal|dal tadka|yellow dal|toor dal|arhar dal|lentil curry,KATORI,150,150,8.5,20.0,4.0
+Dal fry,dal tadka fry,KATORI,180,150,8.5,20.0,7.0
+Dal makhani,maa ki dal|black dal,KATORI,280,150,10.0,24.0,16.0
+Moong dal,green gram dal|mung dal,KATORI,140,150,9.0,20.0,3.0
+Masoor dal,red lentil dal,KATORI,145,150,9.5,20.0,3.0
+Chana dal,bengal gram dal,KATORI,180,150,10.0,26.0,4.5
+Sambar,sambhar,KATORI,130,150,6.0,18.0,4.0
+Rasam,saaru|chaaru,KATORI,60,150,2.0,9.0,2.0
+Rajma,rajma masala|kidney bean curry,KATORI,210,150,10.0,28.0,6.5
+Chole,chana masala|chhole|chickpea curry,KATORI,240,150,10.0,30.0,9.0
+Kadhi,kadhi pakora|punjabi kadhi|gujarati kadhi,KATORI,160,150,5.0,14.0,9.0
+Palak paneer,saag paneer|spinach paneer,KATORI,260,150,12.0,9.0,20.0
+Paneer butter masala,paneer makhani|shahi paneer,KATORI,340,150,13.0,12.0,27.0
+Kadai paneer,karahi paneer,KATORI,290,150,13.0,10.0,22.0
+Matar paneer,mutter paneer|peas paneer,KATORI,260,150,11.0,13.0,18.0
+Paneer bhurji,paneer scramble,KATORI,300,120,16.0,6.0,24.0
+Paneer tikka,paneer tikka dry,PLATE,330,180,20.0,10.0,23.0
+Aloo gobi,aloo gobhi|potato cauliflower,KATORI,170,150,4.0,20.0,9.0
+Aloo sabzi,potato sabzi|aloo bhaji|aloo curry,KATORI,180,150,3.0,24.0,8.5
+Jeera aloo,cumin potatoes,KATORI,200,150,3.0,26.0,10.0
+Bhindi masala,okra|bhindi sabzi|bhindi fry|lady finger,KATORI,150,150,3.0,12.0,10.0
+Baingan bharta,brinjal bharta|eggplant bharta,KATORI,150,150,3.0,12.0,10.0
+Mixed veg,mixed vegetable curry|mix veg sabzi,KATORI,160,150,4.0,15.0,9.0
+Cabbage sabzi,patta gobi sabzi|cabbage poriyal,KATORI,110,150,2.5,10.0,7.0
+Beans poriyal,green beans sabzi|beans thoran,KATORI,110,150,3.0,10.0,6.5
+Lauki sabzi,bottle gourd curry|dudhi sabzi,KATORI,90,150,2.0,9.0,5.0
+Methi sabzi,fenugreek sabzi|aloo methi,KATORI,140,150,4.0,14.0,8.0
+Malai kofta,kofta curry,KATORI,360,150,9.0,20.0,27.0
+Avial,aviyal,KATORI,180,150,3.5,14.0,13.0
+Chicken curry,murgh curry|chicken gravy|home style chicken curry,KATORI,270,180,24.0,7.0,16.0
+Butter chicken,murgh makhani|chicken makhani,KATORI,380,180,26.0,10.0,26.0
+Chicken tikka masala,tikka masala,KATORI,350,180,26.0,10.0,23.0
+Kadai chicken,karahi chicken,KATORI,300,180,25.0,8.0,19.0
+Chicken tikka,chicken tikka dry,PLATE,280,180,36.0,4.0,13.0
+Tandoori chicken,tandoori murgh,PIECE,260,150,30.0,4.0,13.0
+Chicken 65,chicken sixty five,PLATE,400,180,30.0,15.0,24.0
+Grilled chicken breast,chicken breast,GRAM,1.65,1,0.31,0.0,0.036
+Mutton curry,gosht curry|lamb curry|rogan josh|mutton gravy,KATORI,330,180,25.0,6.0,23.0
+Keema,mutton keema|chicken keema|keema matar,KATORI,320,150,22.0,8.0,22.0
+Fish curry,machli curry|meen curry|fish gravy,KATORI,230,180,22.0,6.0,13.0
+Fish fry,fried fish|tawa fish,PIECE,220,100,20.0,6.0,13.0
+Prawn curry,shrimp curry|jhinga curry,KATORI,240,180,20.0,8.0,14.0
+Egg curry,anda curry,KATORI,240,180,13.0,8.0,17.0
+Boiled egg,egg|anda|hard boiled egg,PIECE,78,50,6.3,0.6,5.3
+Omelette,omelet|masala omelette|anda omelette,PIECE,170,100,11.0,2.0,13.0
+Egg bhurji,anda bhurji|scrambled eggs,KATORI,230,120,14.0,4.0,17.0
+Fried egg,egg fry|half fry,PIECE,110,50,6.5,0.5,9.0
+Idli,idly,PIECE,58,40,2.0,12.0,0.2
+Dosa,plain dosa|sada dosa,PIECE,170,80,4.0,28.0,4.5
+Masala dosa,potato dosa,PIECE,350,170,7.0,50.0,13.0
+Rava dosa,sooji dosa,PIECE,220,90,4.0,30.0,9.0
+Uttapam,uthappam|onion uttapam,PIECE,250,130,6.0,38.0,8.0
+Medu vada,vada|uddina vada|vadai,PIECE,140,50,4.0,14.0,8.0
+Upma,rava upma|uppittu|sooji upma,KATORI,250,180,6.0,36.0,9.0
+Poha,kanda poha|aval|chivda poha,KATORI,250,150,5.0,40.0,8.0
+Pongal,ven pongal|khara pongal,KATORI,280,180,8.0,38.0,11.0
+Appam,palappam,PIECE,120,60,2.0,24.0,1.5
+Puttu,kerala puttu,KATORI,200,120,4.0,42.0,1.0
+Coconut chutney,chutney|nariyal chutney,KATORI,170,60,2.0,6.0,16.0
+Green chutney,pudina chutney|mint chutney|hari chutney,KATORI,40,40,1.0,5.0,2.0
+Dhokla,khaman dhokla|khaman,PIECE,55,35,2.5,8.0,1.5
+Pav bhaji,paav bhaji,PLATE,450,300,10.0,60.0,19.0
+Vada pav,wada pav,PIECE,300,140,6.0,40.0,13.0
+Misal pav,misal,PLATE,480,300,16.0,58.0,20.0
+Samosa,aloo samosa|singara,PIECE,260,100,4.0,28.0,15.0
+Kachori,khasta kachori|pyaz kachori,PIECE,280,80,5.0,28.0,17.0
+Pakora,pakoda|bhajiya|onion pakora|bhaji,PIECE,60,20,1.5,5.0,3.8
+Aloo tikki,tikki|potato tikki,PIECE,150,70,2.5,18.0,7.5
+Pani puri,golgappa|puchka|gol gappe,PIECE,35,18,0.6,5.0,1.5
+Bhel puri,bhel,KATORI,250,120,5.0,40.0,8.0
+Sev puri,dahi puri,PLATE,330,150,6.0,42.0,15.0
+Dahi vada,dahi bhalla,PIECE,140,100,5.0,16.0,6.0
+Chole bhature,chhole bhature,PLATE,750,350,20.0,90.0,35.0
+Momos,veg momos|dumplings,PIECE,40,25,1.2,6.5,1.0
+Chicken momos,chicken dumplings,PIECE,50,28,3.0,5.5,1.8
+Hakka noodles,veg noodles|chow mein|chowmein,PLATE,450,250,10.0,65.0,16.0
+Maggi,instant noodles|maggi noodles,PIECE,350,70,8.0,46.0,15.0
+Manchurian,veg manchurian|gobi manchurian,KATORI,300,150,6.0,30.0,17.0
+Chilli chicken,chilli chicken dry,PLATE,450,200,30.0,18.0,28.0
+Pizza slice,pizza,PIECE,280,110,12.0,32.0,11.0
+Burger,veg burger|aloo tikki burger,PIECE,350,150,9.0,45.0,14.0
+Chicken burger,chicken sandwich burger,PIECE,450,180,22.0,42.0,21.0
+French fries,fries|finger chips,KATORI,320,110,3.5,40.0,16.0
+Veg sandwich,sandwich|bombay sandwich|grilled sandwich,PIECE,280,150,8.0,38.0,10.0
+Chicken sandwich,club sandwich,PIECE,380,180,22.0,36.0,16.0
+Pasta,white sauce pasta|red sauce pasta|penne,PLATE,500,250,15.0,70.0,17.0
+Frankie,kathi roll|egg roll|chicken roll|wrap,PIECE,420,180,16.0,48.0,18.0
+Shawarma,chicken shawarma,PIECE,450,200,25.0,42.0,20.0
+Dahi,curd|yogurt|yoghurt|plain curd,KATORI,90,150,4.5,6.0,5.0
+Raita,boondi raita|cucumber raita,KATORI,90,150,4.0,7.0,5.0
+Lassi,sweet lassi,CUP,240,250,7.0,38.0,6.5
+Chaas,buttermilk|mattha|majjige,CUP,40,250,2.0,5.0,1.2
+Milk,doodh|full cream milk|toned milk,CUP,130,200,6.4,9.6,7.4
+Paneer,cottage cheese|raw paneer,GRAM,2.65,1,0.18,0.012,0.21
+Tea with milk and sugar,chai|masala chai|tea|adrak chai,CUP,90,150,2.5,13.0,3.0
+Black tea,tea without sugar|green tea,CUP,2,150,0.0,0.5,0.0
+Coffee with milk and sugar,coffee|filter coffee|cappuccino|latte,CUP,110,150,3.5,14.0,4.0
+Black coffee,americano|espresso,CUP,5,150,0.3,0.0,0.0
+Cold coffee,iced coffee,CUP,220,250,6.0,32.0,7.0
+Fresh lime soda,nimbu soda|lime soda,CUP,80,250,0.0,20.0,0.0
+Nimbu pani,lemonade|shikanji,CUP,70,250,0.0,18.0,0.0
+Coconut water,nariyal pani|tender coconut,CUP,45,240,1.7,9.0,0.5
+Orange juice,fresh juice|mosambi juice,CUP,110,250,1.7,26.0,0.5
+Soft drink,cola|coke|pepsi|soda,ML,0.42,1,0.0,0.105,0.0
+Beer,lager,ML,0.43,1,0.005,0.035,0.0
+Banana,kela,PIECE,105,118,1.3,27.0,0.4
+Apple,seb,PIECE,95,180,0.5,25.0,0.3
+Mango,aam,PIECE,200,330,2.8,50.0,1.3
+Orange,santra|narangi,PIECE,62,130,1.2,15.0,0.2
+Papaya,papita,KATORI,60,150,0.7,15.0,0.4
+Watermelon,tarbuz,KATORI,45,150,0.9,11.0,0.2
+Grapes,angoor,KATORI,100,150,1.0,26.0,0.2
+Guava,amrood|peru,PIECE,68,125,2.6,14.0,1.0
+Pomegranate,anaar,KATORI,125,150,2.5,28.0,1.7
+Chikoo,sapota|chiku,PIECE,85,100,0.4,20.0,1.1
+Mixed fruit bowl,fruit salad|fruit chaat,KATORI,90,150,1.0,22.0,0.3
+Salad,green salad|kachumber|cucumber salad,KATORI,40,150,1.5,8.0,0.3
+Sprouts,moong sprouts|sprout salad,KATORI,100,100,7.0,15.0,0.5
+Peanuts,moongphali|groundnuts,GRAM,5.67,1,0.26,0.16,0.49
+Almonds,badam,PIECE,7,1.2,0.25,0.25,0.6
+Cashews,kaju,PIECE,9,1.6,0.3,0.5,0.7
+Roasted chana,bhuna chana|chana,KATORI,180,50,9.0,30.0,2.5
+Makhana,fox nuts|lotus seeds,KATORI,100,30,3.0,20.0,0.2
+Namkeen,bhujia|mixture|chivda|farsan,GRAM,5.3,1,0.15,0.45,0.32
+Potato chips,chips|wafers,GRAM,5.36,1,0.07,0.53,0.35
+Biscuit,biscuits|cookie|marie biscuit,PIECE,35,7,0.5,5.5,1.2
+Rusk,toast rusk,PIECE,50,12,1.2,9.0,1.0
+Cornflakes with milk,cereal|cornflakes,KATORI,220,180,7.0,38.0,5.0
+Oats,oatmeal|porridge|masala oats,KATORI,180,180,6.0,30.0,4.0
+Muesli with milk,muesli,KATORI,260,180,8.0,40.0,7.0
+Peanut butter toast,pb toast,PIECE,190,40,7.0,16.0,11.0
+Butter toast,bread butter,PIECE,110,32,2.4,13.0,5.0
+Gulab jamun,gulab jamoon,PIECE,150,40,2.0,22.0,6.0
+Rasgulla,rosogolla,PIECE,120,50,2.5,24.0,1.5
+Jalebi,jilebi,PIECE,150,35,1.0,26.0,5.0
+Kheer,payasam|rice kheer|chawal ki kheer,KATORI,250,150,6.0,38.0,8.0
+Gajar halwa,carrot halwa|gajar ka halwa,KATORI,350,130,5.0,45.0,17.0
+Sooji halwa,sheera|rava kesari|kesari bath,KATORI,350,120,4.0,50.0,15.0
+Ladoo,laddu|besan ladoo|motichoor ladoo,PIECE,180,40,3.0,22.0,9.0
+Barfi,burfi|kaju katli,PIECE,130,30,2.5,16.0,6.5
+Rasmalai,ras malai,PIECE,180,80,6.0,20.0,8.0
+Ice cream,icecream|kulfi,KATORI,210,100,3.5,24.0,11.0
+Chocolate,dairy milk|chocolate bar,GRAM,5.35,1,0.077,0.59,0.3
+Cake slice,pastry|cake,PIECE,300,80,4.0,42.0,13.0
+Dry fruit mix,trail mix,KATORI,300,50,8.0,20.0,22.0
+Protein shake,whey shake|protein powder with milk,CUP,230,300,30.0,15.0,5.0
+Sugar,cheeni|shakkar,GRAM,4.0,1,0.0,1.0,0.0
+Ghee,clarified butter,GRAM,9.0,1,0.0,0.0,1.0

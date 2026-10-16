@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onb_welcome_title">Your day, coming full circle.</string>
+    <string name="onb_welcome_body">Loop notices your habits on its own and tells you what they mean, in plain words.</string>
+    <string name="onb_welcome_point_auto">Steps, sleep and screen time, tracked without you lifting a finger</string>
+    <string name="onb_welcome_point_mood">A quick mood and energy check three times a day</string>
+    <string name="onb_welcome_point_insight">Simple insights, like how your sleep changes your mood</string>
+    <string name="onb_welcome_cta">Get started</string>
+
+    <string name="onb_privacy_title">Private by design</string>
+    <string name="onb_privacy_body">Everything Loop learns stays on this phone. There\'s no account to create and no Loop server.</string>
+    <string name="onb_privacy_gemini_title">Meal photos (optional)</string>
+    <string name="onb_privacy_gemini_body">If you add your own free Gemini key, meal photos are sent to Google to recognise the food. On the free tier, Google may use these photos to improve its products. You can skip this and log food by hand.</string>
+    <string name="onb_privacy_backup">Backups go to your own Google Drive through Android, or to a file you export yourself.</string>
+    <string name="onb_privacy_cta">Sounds good</string>
+
+    <string name="onb_permissions_title">What Loop can notice</string>
+    <string name="onb_permissions_more">Show why</string>
+    <string name="onb_permissions_cta">Continue</string>
+
+    <string name="onb_about_title">A little about you</string>
+    <string name="onb_about_body">Both are optional and stay on this phone.</string>
+    <string name="onb_about_gender">Gender</string>
+    <string name="onb_about_woman">Woman</string>
+    <string name="onb_about_man">Man</string>
+    <string name="onb_about_prefer_not">Prefer not to say</string>
+    <string name="onb_about_gender_hint">Used to estimate calories burned. You can change it any time in Me › About you.</string>
+    <string name="onb_about_gender_female">Loop will also add a private period tracker under Me. It never shows on the Today screen, and you can turn it off in Settings.</string>
+    <string name="onb_about_label">Your name</string>
+    <string name="onb_about_cta">Continue</string>
+    <string name="onb_about_skip">Skip</string>
+
+    <string name="onb_ready_title">You\'re all set</string>
+    <string name="onb_ready_title_named">You\'re all set, %1$s</string>
+    <string name="onb_ready_body">Your four rings fill up as Loop learns your day: Move, Sleep, Screen and Fuel. Turn on each tracker when you\'re ready, from Me › Permissions.</string>
+    <string name="onb_ready_cta">Open Loop</string>
+</resources>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="channel_aware">Gentle nudges</string>
+    <string name="channel_aware_desc">Water, sitting and screen-time nudges. Counted against your daily limit.</string>
+    <string name="channel_alert">Check-ins and confirmations</string>
+    <string name="channel_alert_desc">Mood check-ins, sleep and workout confirmations, medicine reminders.</string>
+    <string name="channel_relax">Summaries</string>
+    <string name="channel_relax_desc">Insight of the day, streak notes and your Sunday report card.</string>
+
+    <string name="n_mood_title">How are you feeling?</string>
+    <string name="n_mood_text">One tap is enough.</string>
+    <string name="n_mood_good">Good</string>
+    <string name="n_mood_okay">Okay</string>
+    <string name="n_mood_low">Low</string>
+    <string name="n_energy_title">And your energy?</string>
+    <string name="n_energy_high">High</string>
+    <string name="n_energy_okay">Okay</string>
+    <string name="n_energy_low">Low</string>
+    <string name="n_thanks">Saved. Thanks!</string>
+
+    <string name="n_journal_title">One line about today?</string>
+    <string name="n_journal_text">Anything you\'d like to remember.</string>
+    <string name="n_journal_hint">Today I…</string>
+    <string name="n_journal_reply">Save</string>
+
+    <string name="n_weight_title">Weekly weigh-in</string>
+    <string name="n_weight_text">Reply with your weight in kg, e.g. 68.5</string>
+    <string name="n_weight_hint">Weight in kg</string>
+    <string name="n_weight_reply">Log</string>
+    <string name="n_weight_saved">Saved %1$s kg</string>
+
+    <string name="n_place_title">Where are you working today?</string>
+    <string name="n_place_office">Office</string>
+    <string name="n_place_home">Home</string>
+    <string name="n_place_other">Elsewhere</string>
+
+    <string name="n_medicine_title">Time for %1$s</string>
+    <string name="n_medicine_text">%1$s</string>
+    <string name="n_medicine_taken">Taken</string>
+
+    <string name="n_sleep_title">You slept %1$s</string>
+    <string name="n_sleep_text">%1$s to %2$s. Does that look right?</string>
+    <string name="n_yes">Yes</string>
+    <string name="n_no">No</string>
+    <string name="n_fix">Fix it</string>
+
+    <string name="n_workout_title">Gym visit, %1$s</string>
+    <string name="n_workout_text">%1$s to %2$s. Log it as a workout?</string>
+
+    <string name="n_meal_ready_title">Your meal photo is ready</string>
+    <string name="n_meal_ready_text">Tap to check the dishes and log it.</string>
+
+    <string name="n_meal_title">Had a meal?</string>
+    <string name="n_meal_text">Snap a photo to log it in a few seconds.</string>
+
+    <string name="n_water_title">A glass of water?</string>
+    <string name="n_water_text">%1$d of %2$d glasses so far today.</string>
+    <string name="n_water_add">+1 glass</string>
+
+    <string name="n_sitting_title">Time for a stretch</string>
+    <string name="n_sitting_text">You\'ve been still for over an hour. A two-minute walk helps.</string>
+
+    <string name="n_screen_title">You\'ve reached your screen time for today</string>
+    <string name="n_screen_text">%1$s so far. Maybe a break from the phone?</string>
+
+    <string name="n_wind_down_title">Time to wind down</string>
+    <string name="n_wind_down_text">Putting the phone away now helps you fall asleep sooner.</string>
+
+    <string name="n_insight_title">Something Loop noticed</string>
+
+    <string name="n_streak_title">Your %1$d-day streak is alive</string>
+    <string name="n_streak_text">%1$s today keeps it going. No pressure.</string>
+
+    <string name="n_report_title">Your week in Loop</string>
+    <string name="n_report_text">Move %1$s · Sleep %2$s · Screen %3$s · Fuel %4$s</string>
+
+    <string name="n_ask_title">Turn off these reminders?</string>
+    <string name="n_ask_text">You\'ve skipped the last few \"%1$s\" notes. Loop can stop sending them.</string>
+    <string name="n_ask_off">Turn off</string>
+    <string name="n_ask_keep">Keep</string>
+
+    <string name="type_mood_morning">Morning mood check-in</string>
+    <string name="type_mood_afternoon">Afternoon mood check-in</string>
+    <string name="type_mood_night">Evening mood check-in</string>
+    <string name="type_journal">One-line journal</string>
+    <string name="type_weight_weekly">Weekly weigh-in</string>
+    <string name="type_place_check_in">Office or home</string>
+    <string name="type_medicine">Medicine reminders</string>
+    <string name="type_sleep_confirm">Morning sleep check</string>
+    <string name="type_workout_confirm">Workout confirmations</string>
+    <string name="type_meal_ready">Meal photo ready</string>
+    <string name="type_meal_reminder">Meal reminders</string>
+    <string name="type_water">Water reminders</string>
+    <string name="type_sitting">Sitting too long</string>
+    <string name="type_screen_goal">Screen-time limit reached</string>
+    <string name="type_wind_down">Wind-down reminder</string>
+    <string name="type_daily_insight">Insight of the day</string>
+    <string name="type_streak">Streak note</string>
+    <string name="type_weekly_report">Sunday report card</string>
+    <string name="type_period_reminder">Period reminder</string>
+    <string name="n_period_title">A reminder from Loop</string>
+    <string name="n_period_text">Your period may start in about 2 days.</string>
+    <string name="n_private_public">Loop reminder</string>
+</resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="st_title">Screen time</string>
+    <string name="st_today">Today</string>
+    <string name="st_yesterday">Yesterday</string>
+    <string name="st_prev_day">Previous day</string>
+    <string name="st_next_day">Next day</string>
+    <string name="st_total">On your phone</string>
+    <string name="st_unlocks">Unlocks</string>
+    <string name="st_focus">Focus time</string>
+    <string name="st_by_hour">By hour</string>
+    <string name="st_by_hour_desc">Screen time by hour. Busiest hour: %1$s, %2$s.</string>
+    <string name="st_apps">Apps</string>
+    <string name="st_show_all">Show all %1$d apps</string>
+    <string name="st_show_less">Show fewer</string>
+    <string name="st_notifications">Notifications</string>
+    <string name="st_notifications_count">%1$d</string>
+    <string name="st_no_notifications">No notifications counted yet. Turn on notification access to see them.</string>
+    <string name="st_music">Listening</string>
+    <string name="st_no_music">No music or podcasts played this day.</string>
+    <string name="st_no_data_title">No screen time for this day</string>
+    <string name="st_no_data_body">Loop starts counting from when you turn on usage access. Android keeps about a week of history.</string>
+    <string name="st_gate">Turn on usage access to see which apps you use and for how long.</string>
+    <string name="st_gate_listener">Turn on notification access to count notifications and music time.</string>
+    <string name="st_footnote">Counted midnight to midnight, like Digital Wellbeing. Focus time is 25+ minutes without your phone in work hours (Monday to Friday).</string>
+</resources>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fd_title">Food and drinks</string>
+    <string name="fd_today_kcal">%1$s eaten today</string>
+    <string name="fd_no_meals">Nothing logged yet today.</string>
+    <string name="fd_burned">About %1$s kcal burned so far today (resting plus activity).</string>
+    <string name="fd_burned_missing">Add your height, year of birth and weight in Me to see calories burned.</string>
+    <string name="fd_snap">Snap a meal</string>
+    <string name="fd_search">Search and add</string>
+    <string name="fd_meals">Meals</string>
+    <string name="fd_delete_meal">Delete meal</string>
+    <string name="fd_kcal">%1$s kcal</string>
+    <string name="fd_kcal_unknown">calories unknown</string>
+    <string name="fd_water">Water</string>
+    <string name="fd_water_count">%1$d of %2$d glasses</string>
+    <string name="fd_glass">glass</string>
+    <string name="fd_tea">Tea</string>
+    <string name="fd_coffee">Coffee</string>
+    <string name="fd_add_tea">+1 tea</string>
+    <string name="fd_add_coffee">+1 coffee</string>
+    <string name="fd_drinks_count">%1$d tea · %2$d coffee today</string>
+    <string name="fd_pending">%1$d photos waiting</string>
+    <string name="fd_pending_one">1 photo waiting</string>
+    <string name="fd_pending_hint">Taken when Loop couldn\'t reach Gemini. Tap to review.</string>
+    <string name="fd_recent">Log again</string>
+
+    <string name="cam_title">Snap your meal</string>
+    <string name="cam_capture">Take photo</string>
+    <string name="cam_skip">Skip the photo</string>
+    <string name="cam_gate">Turn on the camera to snap your meals.</string>
+    <string name="cam_failed">Couldn\'t take the photo. Try again.</string>
+
+    <string name="rv_title">Check your meal</string>
+    <string name="rv_analysing">Looking at your plate…</string>
+    <string name="rv_meal_type">Meal</string>
+    <string name="mt_breakfast">Breakfast</string>
+    <string name="mt_lunch">Lunch</string>
+    <string name="mt_snack">Snack</string>
+    <string name="mt_dinner">Dinner</string>
+    <string name="rv_total">Total %1$s kcal</string>
+    <string name="rv_add_item">Add a dish</string>
+    <string name="rv_scan">Scan a packet</string>
+    <string name="rv_log">Log meal</string>
+    <string name="rv_remove">Remove %1$s</string>
+    <string name="rv_change_unit">Unit</string>
+    <string name="rv_estimate">Estimate (not in Loop\'s food list)</string>
+    <string name="rv_search_hint">Search dishes, e.g. dal, roti, paneer</string>
+    <string name="rv_search_label">Dish</string>
+    <string name="rv_no_results">Not found. Add \"%1$s\" anyway</string>
+    <string name="rv_empty">No dishes yet. Search to add one.</string>
+    <string name="rv_offline">You\'re offline, so Loop couldn\'t look at the photo. Add dishes yourself, or let Loop analyse it later.</string>
+    <string name="rv_no_key">Add your free Gemini key in Me › Food photo key to recognise photos. For now, add dishes yourself.</string>
+    <string name="rv_rate_limited">Gemini\'s free limit is busy right now. Add dishes yourself, or let Loop analyse it later.</string>
+    <string name="rv_failed">Loop couldn\'t read the photo this time. Add dishes yourself, or try again later.</string>
+    <string name="rv_bad_key">Gemini didn\'t accept your key. Check it in Me › Food photo key.</string>
+    <string name="rv_nothing_found">Loop didn\'t spot any food. Add dishes yourself.</string>
+    <string name="rv_analyse_later">Analyse later</string>
+    <string name="rv_queued">Saved. Loop will analyse it when you\'re online and let you know.</string>
+    <string name="rv_recent">Recent meals</string>
+    <string name="rv_cancel">Cancel</string>
+    <string name="rv_done">Done</string>
+
+    <string name="bc_title">Scan a packet</string>
+    <string name="bc_hint">Point the camera at the barcode.</string>
+    <string name="bc_unknown_title">New packet</string>
+    <string name="bc_unknown_body">Loop doesn\'t know this barcode yet. Add it once and it\'ll be filled in next time.</string>
+    <string name="bc_name">Product name</string>
+    <string name="bc_kcal">Calories per 100 g</string>
+    <string name="bc_grams">Grams per pack</string>
+    <string name="bc_save">Save and add</string>
+
+    <string name="unit_piece">piece</string>
+    <string name="unit_katori">katori</string>
+    <string name="unit_plate">plate</string>
+    <string name="unit_gram">g</string>
+    <string name="unit_cup">cup</string>
+    <string name="unit_ml">ml</string>
+</resources>

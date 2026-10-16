@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tracker_screen_time">Screen time</string>
+    <string name="tracker_screen_time_detail">Apps, unlocks and focus time</string>
+    <string name="tracker_movement">Movement</string>
+    <string name="tracker_movement_detail">Steps, walks, workouts and sitting time</string>
+    <string name="tracker_sleep">Sleep</string>
+    <string name="tracker_sleep_detail">Bedtime, wake time and how long you slept</string>
+    <string name="tracker_food">Food</string>
+    <string name="tracker_food_detail">Meal photos and calories</string>
+    <string name="tracker_water">Water and drinks</string>
+    <string name="tracker_water_detail">Glasses of water, tea and coffee</string>
+    <string name="tracker_check_ins">Check-ins</string>
+    <string name="tracker_check_ins_detail">Mood, energy, journal, weight and health</string>
+    <string name="tracker_music">Music</string>
+    <string name="tracker_music_detail">Listening time per app</string>
+    <string name="tracker_places">Places</string>
+    <string name="tracker_places_detail">Office, home, gym and commute</string>
+
+    <string name="area_move">Move</string>
+    <string name="area_sleep">Sleep</string>
+    <string name="area_screen">Screen</string>
+    <string name="area_fuel">Fuel</string>
+</resources>

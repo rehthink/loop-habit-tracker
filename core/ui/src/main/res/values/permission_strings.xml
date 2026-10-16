@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- One-screen explanations shown before each system request. Plain words, no jargon. -->
+
+    <string name="perm_usage_title">Screen time</string>
+    <string name="perm_usage_short">See which apps you use and for how long.</string>
+    <string name="perm_usage_why">Loop reads how long each app was open and how often you unlock your phone, the same numbers Digital Wellbeing shows. It also helps work out when you fell asleep.\n\nLoop never sees what you do inside an app.</string>
+    <string name="perm_usage_where">On the next screen, find Loop and turn on \"Permit usage access\".</string>
+
+    <string name="perm_activity_title">Physical activity</string>
+    <string name="perm_activity_short">Count steps and notice walks, runs and rides.</string>
+    <string name="perm_activity_why">Loop uses your phone\'s step counter and motion detection to log steps and walks on its own, without you opening the app. It also tells Loop when the phone has been still at night, which helps with sleep.</string>
+
+    <string name="perm_health_title">Health Connect</string>
+    <string name="perm_health_short">Bring in steps, workouts, sleep and heart rate from your watch.</string>
+    <string name="perm_health_why">If you wear a watch or use another fitness app, Loop can read that data from Health Connect. Loop only reads: it never writes to Health Connect or shares anything.</string>
+
+    <string name="perm_listener_title">Notification access</string>
+    <string name="perm_listener_short">Count notifications and notice when music is playing.</string>
+    <string name="perm_listener_why">Loop counts how many notifications each app sends and notes when music starts and stops, so it can show your listening time.\n\nLoop doesn\'t keep the text of your notifications.</string>
+    <string name="perm_listener_where">On the next screen, turn on access for Loop.</string>
+
+    <string name="perm_notify_title">Notifications</string>
+    <string name="perm_notify_short">Gentle reminders and one-tap check-ins.</string>
+    <string name="perm_notify_why">A few short notes a day, like a mood check-in or \"did you sleep at 11:40?\", that you can answer right from the notification. You choose how many, and quiet hours keep your nights silent.</string>
+
+    <string name="perm_location_title">Location</string>
+    <string name="perm_location_short">Know when you reach the gym, office or home.</string>
+    <string name="perm_location_why">You save a few places once. Android then tells Loop when you arrive or leave.\n\nLoop doesn\'t track your route, and GPS is never left running.</string>
+
+    <string name="perm_bg_location_title">Location, all the time</string>
+    <string name="perm_bg_location_short">Log gym visits and office hours even when Loop is closed.</string>
+    <string name="perm_bg_location_why">Arrival and leaving alerts only work if Android can tell Loop while it\'s in the background. Loop uses this for your saved places only.</string>
+    <string name="perm_bg_location_where">On the next screen, choose \"Allow all the time\".</string>
+    <string name="perm_bg_location_needs">Turn on Location first.</string>
+
+    <string name="perm_camera_title">Camera</string>
+    <string name="perm_camera_short">Snap a meal to log it.</string>
+    <string name="perm_camera_why">Take a photo of your plate and Loop fills in what\'s on it. The camera is only used when you open the food camera yourself.</string>
+
+    <string name="perm_battery_title">Run in the background</string>
+    <string name="perm_battery_short">Stop your phone pausing Loop and leaving gaps in your day.</string>
+    <string name="perm_battery_why">Some phones pause apps to save battery, which leaves holes in your data. Loop is built to be light: it checks in every 15 minutes at most, never keeps GPS on, and never uses the microphone.</string>
+    <string name="perm_battery_where">On the next screen, pick \"All apps\", find Loop and choose \"Don\'t optimise\".</string>
+
+    <string name="perm_status_on">On</string>
+    <string name="perm_status_off">Off</string>
+    <string name="perm_status_not_needed">Not needed</string>
+    <string name="perm_status_soon">Not installed</string>
+    <string name="perm_status_waiting">Needs location</string>
+
+    <string name="perm_turn_on">Turn on</string>
+    <string name="perm_open_settings">Open settings</string>
+    <string name="perm_not_now">Not now</string>
+    <string name="perm_already_on">This is already on. You can turn it off any time in your phone\'s settings.</string>
+    <string name="perm_used_for">Used for</string>
+    <string name="perm_health_get">Get Health Connect</string>
+    <string name="perm_health_missing">Health Connect isn\'t on this phone yet. It\'s free from the Play Store and only needed if you use a watch or another fitness app.</string>
+    <string name="perm_gate_action">Turn on</string>
+    <string name="perm_ask_later">Loop asks for each of these only when you first use that feature.</string>
+</resources>

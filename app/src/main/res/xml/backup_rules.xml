@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Auto Backup on Android 11 and below. Only the user's data and settings go to their own
+     Google Drive. The encrypted secrets file (loop_secure) is deliberately not included:
+     its Keystore key never leaves the device, so a restored copy could not be read. -->
+<full-backup-content>
+    <include domain="database" path="loop.db" />
+    <include domain="file" path="datastore/user_preferences.preferences_pb" />
+</full-backup-content>

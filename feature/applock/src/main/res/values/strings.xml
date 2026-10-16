@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lock_title">Loop is locked</string>
+    <string name="lock_enter_pin">Enter your PIN</string>
+    <string name="lock_cooldown">Too many tries. Try again in %1$d s</string>
+    <string name="lock_biometric_title">Unlock Loop</string>
+    <string name="lock_use_pin">Use PIN</string>
+
+    <string name="pin_setup_title">App lock</string>
+    <string name="pin_setup_choose">Choose a PIN</string>
+    <string name="pin_setup_confirm">Type it once more</string>
+    <string name="pin_setup_hint">%1$d to %2$d digits. You\'ll use it to open Loop.</string>
+    <string name="pin_setup_mismatch">Those didn\'t match. Let\'s try again.</string>
+    <string name="pin_setup_next">Next</string>
+</resources>

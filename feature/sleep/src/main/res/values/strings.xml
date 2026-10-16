@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sl_title">Sleep</string>
+    <string name="sl_slept">You slept %1$s</string>
+    <string name="sl_range">%1$s to %2$s</string>
+    <string name="sl_source_api">Estimated from motion and your phone</string>
+    <string name="sl_source_gap">Estimated from when your phone was put down</string>
+    <string name="sl_source_watch">From your watch</string>
+    <string name="sl_source_user">You set this</string>
+    <string name="sl_confirmed">Confirmed</string>
+    <string name="sl_looks_right">Looks right</string>
+    <string name="sl_fix">Fix it</string>
+    <string name="sl_no_estimate_title">No sleep estimate for last night</string>
+    <string name="sl_no_estimate_body">Loop works out your sleep from motion and when your phone was put down. You can also add it yourself.</string>
+    <string name="sl_add">Add last night\'s sleep</string>
+    <string name="sl_bedtime">Went to bed</string>
+    <string name="sl_wake">Woke up</string>
+    <string name="sl_save">Save</string>
+    <string name="sl_cancel">Cancel</string>
+    <string name="sl_next">Next</string>
+    <string name="sl_week">Last 7 nights</string>
+    <string name="sl_week_avg">Average %1$s a night</string>
+    <string name="sl_week_desc">Sleep for the last 7 nights. Average %1$s.</string>
+    <string name="sl_gate_activity">Turn on physical activity so Loop can use the Sleep API and phone stillness.</string>
+    <string name="sl_gate_usage">Turn on usage access so Loop can tell when your phone was put down at night.</string>
+</resources>

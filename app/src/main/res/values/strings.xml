@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Loop</string>
+
+    <string name="tab_today">Today</string>
+    <string name="tab_progress">Progress</string>
+    <string name="tab_me">Me</string>
+
+    <string name="quick_log">Quick log</string>
+    <string name="quick_log_food">Food photo</string>
+    <string name="quick_log_water">Water</string>
+    <string name="quick_log_mood">Mood</string>
+    <string name="quick_log_health">Health issue</string>
+    <string name="quick_log_water_added">Added a glass of water</string>
+    <string name="quick_log_undo">Undo</string>
+    <string name="hc_privacy_title">How Loop uses Health Connect</string>
+    <string name="hc_privacy_body">Loop reads steps, exercise sessions, sleep sessions and heart rate from Health Connect to show your own activity and sleep next to what your phone measures.\n\nLoop only reads. It never writes to Health Connect, and the data stays on this phone: there is no Loop server and nothing is shared.\n\nYou can turn this access off at any time in Health Connect or in your phone\'s settings.</string>
+    <string name="hc_privacy_close">Close</string>
+</resources>

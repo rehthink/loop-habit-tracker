@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="progress_title">Progress</string>
+    <string name="progress_empty_title">Your trends will show up here</string>
+    <string name="progress_empty_body">After a few days, Loop shows how your week compares with your usual, plus streaks, badges and a Sunday report card.</string>
+    <string name="pg_level">Level %1$d</string>
+    <string name="pg_xp">%1$d XP · %2$d to the next level</string>
+    <string name="pg_xp_desc">Points for check-ins, logging meals and hitting goals.</string>
+    <string name="pg_report">This week</string>
+    <plurals name="pg_report_range">
+        <item quantity="one">%1$s to %2$s · %3$d day tracked</item>
+        <item quantity="other">%1$s to %2$s · %3$d days tracked</item>
+    </plurals>
+    <string name="pg_score_vs">Habit score %1$d, last week %2$d</string>
+    <string name="pg_score">Habit score %1$d</string>
+    <string name="pg_no_grade">–</string>
+    <string name="pg_trends">Trends</string>
+    <string name="pg_trend_avg">Average %1$s · your usual %2$s</string>
+    <string name="pg_trend_avg_only">Average %1$s</string>
+    <string name="pg_no_trend">Not enough %1$s data yet.</string>
+    <string name="pg_insights">What Loop noticed</string>
+    <string name="pg_no_insights">Loop needs about two weeks of days to spot links. Keep going: insights get better every day.</string>
+    <string name="pg_more">Show more</string>
+    <string name="pg_less">Show less</string>
+    <string name="pg_streaks">Streaks</string>
+    <string name="pg_streak_days">%1$d days</string>
+    <string name="pg_streak_freeze">Freeze used this week</string>
+    <string name="pg_streak_today">Done today</string>
+    <string name="pg_badges">Badges</string>
+    <string name="pg_badge_earned">Earned %1$s</string>
+    <string name="pg_badge_locked">Not yet</string>
+    <string name="pg_badge_new">New badge: %1$s</string>
+    <string name="pg_bests">Personal bests</string>
+    <string name="pg_close">Close</string>
+    <string name="metric_steps">Steps</string>
+    <string name="metric_sleep">Sleep</string>
+    <string name="metric_screen">Screen</string>
+    <string name="metric_mood">Mood</string>
+    <string name="metric_water">Water</string>
+    <string name="metric_focus">Focus</string>
+</resources>

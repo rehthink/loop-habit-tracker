@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ns_title">Notifications</string>
+    <string name="ns_gate">Turn on notifications so Loop can send check-ins and reminders.</string>
+    <string name="ns_quiet">Quiet hours</string>
+    <string name="ns_quiet_value">%1$s to %2$s. Nothing makes a sound; nudges wait until morning.</string>
+    <string name="ns_quiet_start">Quiet from</string>
+    <string name="ns_quiet_end">Quiet until</string>
+    <string name="ns_cap">Daily limit for nudges and summaries</string>
+    <string name="ns_cap_value">%1$d a day</string>
+    <string name="ns_cap_hint">Check-ins and confirmations you asked for don\'t count.</string>
+    <string name="ns_section_alert">Check-ins and confirmations</string>
+    <string name="ns_section_aware">Gentle nudges</string>
+    <string name="ns_section_relax">Summaries</string>
+    <string name="ns_reduced">Sent less often because the last few were skipped</string>
+    <string name="ns_when_needed">When there\'s something to confirm</string>
+    <string name="ns_change_time">Change time for %1$s</string>
+    <string name="ns_save">Save</string>
+    <string name="ns_cancel">Cancel</string>
+    <string name="ns_next">Next</string>
+    <string name="ns_reset">Reset to default</string>
+    <string name="ns_medicine_times">At each medicine\'s times</string>
+    <string name="ns_sundays">Sundays at %1$s</string>
+
+    <string name="type_mood_morning">Morning mood check-in</string>
+    <string name="type_mood_afternoon">Afternoon mood check-in</string>
+    <string name="type_mood_night">Evening mood check-in</string>
+    <string name="type_journal">One-line journal</string>
+    <string name="type_weight_weekly">Weekly weigh-in</string>
+    <string name="type_place_check_in">Office or home (weekdays)</string>
+    <string name="type_medicine">Medicine reminders</string>
+    <string name="type_sleep_confirm">Morning sleep check</string>
+    <string name="type_workout_confirm">Gym visit confirmations</string>
+    <string name="type_meal_ready">Meal photo ready</string>
+    <string name="type_meal_reminder">Meal reminders</string>
+    <string name="type_water">Water reminders</string>
+    <string name="type_sitting">Sitting for over an hour</string>
+    <string name="type_screen_goal">Screen-time limit reached</string>
+    <string name="type_wind_down">Wind-down reminder</string>
+    <string name="type_daily_insight">Insight of the day</string>
+    <string name="type_streak">Streak note (at most once a day)</string>
+    <string name="type_weekly_report">Sunday report card</string>
+    <string name="type_period_reminder">Period reminder (2 days before, hidden on the lock screen)</string>
+</resources>

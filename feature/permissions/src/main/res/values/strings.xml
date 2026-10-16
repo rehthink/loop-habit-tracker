@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permissions_title">Permissions</string>
+    <plurals name="permissions_summary">
+        <item quantity="one">%1$d of %2$d is on</item>
+        <item quantity="other">%1$d of %2$d are on</item>
+    </plurals>
+    <string name="permissions_footer">Changes you make in your phone\'s settings show up here as soon as you come back.</string>
+    <string name="permissions_not_needed_detail">Your version of Android doesn\'t need this, so there\'s nothing to do.</string>
+    <string name="permissions_done">Done</string>
+</resources>

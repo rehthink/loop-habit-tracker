@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cy_title">Period tracker</string>
+    <string name="cy_start_title">Log your period to get started</string>
+    <string name="cy_start_body">Loop learns your cycle from the days you log and estimates when your next period is due.</string>
+    <string name="cy_started_today">My period started today</string>
+    <string name="cy_log_earlier">Log an earlier period</string>
+    <string name="cy_period_day">Period · day %1$d</string>
+    <string name="cy_cycle_day">Day %1$d of your cycle</string>
+    <string name="cy_next_in">Next period in about %1$d days · %2$s</string>
+    <string name="cy_next_tomorrow">Next period could start tomorrow</string>
+    <string name="cy_next_today">Your period could start today</string>
+    <string name="cy_late">Your period is %1$d days late</string>
+    <string name="cy_late_one">Your period is 1 day late</string>
+    <string name="cy_late_body">Cycles vary, and stress, travel or illness can shift them. Log it when it starts.</string>
+    <string name="cy_fertile">Likely fertile: %1$s to %2$s</string>
+    <string name="cy_phase_follicular">Follicular phase</string>
+    <string name="cy_phase_fertile">Fertile window</string>
+    <string name="cy_phase_luteal">Luteal phase</string>
+    <string name="cy_phase_period">Period</string>
+
+    <string name="cy_today">Today</string>
+    <string name="cy_flow">Flow</string>
+    <string name="cy_symptoms">How you feel</string>
+    <string name="cy_note">Note (optional)</string>
+    <string name="cy_save">Save</string>
+    <string name="cy_cancel">Cancel</string>
+    <string name="cy_clear_day">Clear this day</string>
+    <string name="flow_none">None</string>
+    <string name="flow_spotting">Spotting</string>
+    <string name="flow_light">Light</string>
+    <string name="flow_medium">Medium</string>
+    <string name="flow_heavy">Heavy</string>
+    <string name="sym_cramps">Cramps</string>
+    <string name="sym_headache">Headache</string>
+    <string name="sym_bloating">Bloating</string>
+    <string name="sym_tender_breasts">Tender breasts</string>
+    <string name="sym_back_pain">Back pain</string>
+    <string name="sym_acne">Acne</string>
+    <string name="sym_fatigue">Tired</string>
+    <string name="sym_cravings">Cravings</string>
+    <string name="sym_mood_swings">Mood swings</string>
+    <string name="sym_nausea">Nausea</string>
+
+    <string name="cy_calendar">Calendar</string>
+    <string name="cy_prev_month">Previous month</string>
+    <string name="cy_next_month">Next month</string>
+    <string name="cy_legend_period">Period</string>
+    <string name="cy_legend_predicted">Expected</string>
+    <string name="cy_legend_fertile">Fertile</string>
+    <string name="cy_tap_day">Tap a day to log or change it.</string>
+    <string name="cy_day_desc">%1$s, %2$s</string>
+    <string name="cy_day_logged">period logged</string>
+    <string name="cy_day_predicted">period expected</string>
+    <string name="cy_day_fertile">likely fertile</string>
+    <string name="cy_day_plain">nothing logged</string>
+
+    <string name="cy_averages">Your cycle</string>
+    <string name="cy_averages_value">Cycle about %1$d days · period about %2$d days</string>
+    <string name="cy_averages_from">From your last %1$d cycles.</string>
+    <string name="cy_averages_default">Using a typical 28-day cycle until you\'ve logged two periods.</string>
+    <string name="cy_history">Recent periods</string>
+    <string name="cy_history_row">%1$s · %2$d days</string>
+
+    <string name="cy_insight_title">Something Loop noticed</string>
+    <string name="cy_insight">In the 5 days before your period, your %1$s averages %2$s out of 5, compared with %3$s on other days.</string>
+    <string name="cy_mood">mood</string>
+    <string name="cy_energy">energy</string>
+
+    <string name="cy_disclaimer">Predictions are estimates from your past cycles. Please don\'t rely on them for contraception or medical decisions. Your cycle data stays on this phone, and app lock (Me › Settings) can keep it private.</string>
+</resources>
