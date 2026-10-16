@@ -1,11 +1,14 @@
 package app.loop.core.domain.repository
 
-interface BackupRepository {
-    /** Versioned JSON of everything the user owns (no secrets). */
-    suspend fun exportJson(): String
+import java.io.InputStream
+import java.io.OutputStream
 
-    /** Replaces all user data with the export. Throws [IllegalArgumentException] on an unreadable or newer file. */
-    suspend fun importJson(json: String): ImportResult
+interface BackupRepository {
+    /** Writes versioned JSON of everything the user owns (no secrets) to [out], streamed rather than built in memory. */
+    suspend fun exportTo(out: OutputStream)
+
+    /** Replaces all user data with the export in [input]. Throws [IllegalArgumentException] on an unreadable or newer file. */
+    suspend fun importFrom(input: InputStream): ImportResult
 
     /** Wipes every table, settings, secrets and stored photos. */
     suspend fun deleteEverything()

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -38,7 +39,10 @@ import androidx.compose.ui.unit.dp
 import app.loop.core.designsystem.icon.LoopIcons
 import app.loop.core.designsystem.theme.LoopTheme
 
-/** White (or raised, in dark mode) rounded card with no border or shadow. */
+/**
+ * White (or raised, in dark mode) rounded card. No shadow: a hairline edge keeps it crisp against
+ * the page, which is only one step darker in light mode.
+ */
 @Composable
 fun LoopCard(
     modifier: Modifier = Modifier,
@@ -48,14 +52,31 @@ fun LoopCard(
 ) {
     val colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
     val shape = MaterialTheme.shapes.large
+    val border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f))
     if (onClick != null) {
-        Card(onClick = onClick, modifier = modifier, shape = shape, colors = colors) {
+        Card(onClick = onClick, modifier = modifier, shape = shape, colors = colors, border = border) {
             Column(Modifier.padding(contentPadding), content = content)
         }
     } else {
-        Card(modifier = modifier, shape = shape, colors = colors) {
+        Card(modifier = modifier, shape = shape, colors = colors, border = border) {
             Column(Modifier.padding(contentPadding), content = content)
         }
+    }
+}
+
+/**
+ * The action line at the foot of a tappable card: accent text and an arrow, aligned with the
+ * card's text. The whole card is the touch target, so this isn't a separate button.
+ */
+@Composable
+fun CardAction(text: String, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.padding(top = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(text, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+        Icon(LoopIcons.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
     }
 }
 
@@ -80,9 +101,16 @@ fun SecondaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modi
     ) { Text(text, style = MaterialTheme.typography.labelLarge) }
 }
 
+/**
+ * A text-only button. With [alignToText] its label lines up with the text above it (inside a
+ * card) instead of sitting indented by the button's own padding; the touch area is unchanged.
+ */
 @Composable
-fun QuietButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    TextButton(onClick = onClick, modifier = modifier.heightIn(min = 48.dp)) {
+fun QuietButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, alignToText: Boolean = false) {
+    TextButton(
+        onClick = onClick,
+        modifier = modifier.heightIn(min = 48.dp).then(if (alignToText) Modifier.offset(x = (-12).dp) else Modifier),
+    ) {
         Text(text, style = MaterialTheme.typography.labelLarge)
     }
 }
@@ -148,7 +176,7 @@ fun ListRow(
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(title, style = MaterialTheme.typography.titleSmall)
             if (detail != null) {
-                Text(detail, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(detail, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         trailing()

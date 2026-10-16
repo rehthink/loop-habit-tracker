@@ -151,6 +151,7 @@ private fun AppsCard(apps: List<LabeledMinutes>, color: androidx.compose.ui.grap
             QuietButton(
                 if (expanded) stringResource(R.string.st_show_less) else stringResource(R.string.st_show_all, apps.size),
                 onClick = { expanded = !expanded },
+                alignToText = true,
             )
         }
     }
@@ -194,6 +195,7 @@ private fun CountCard(title: String, items: List<LabeledCount>, empty: String) {
             QuietButton(
                 if (expanded) stringResource(R.string.st_show_less) else stringResource(R.string.st_show_all, items.size),
                 onClick = { expanded = !expanded },
+                alignToText = true,
             )
         }
     }

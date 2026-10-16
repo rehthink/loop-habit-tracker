@@ -9,7 +9,7 @@
     <string name="me_settings_detail">Theme, app lock and trackers</string>
     <string name="me_api_key">Food photo key</string>
     <string name="me_api_key_saved">Saved, ends in %1$s</string>
-    <string name="me_api_key_missing">Not set. Needed to recognise meal photos.</string>
+    <string name="me_api_key_missing">Not set. Needed for meal photos</string>
     <string name="me_privacy">Privacy</string>
     <string name="me_privacy_detail">What Loop keeps, and where</string>
     <string name="me_name_dialog_title">What should Loop call you?</string>
@@ -60,19 +60,19 @@
 
     <string name="me_section_data">Your data</string>
     <string name="me_goals">Goals</string>
-    <string name="me_goals_detail">Steps, sleep, screen time, water and more</string>
+    <string name="me_goals_detail">Steps, sleep, screen time and more</string>
     <string name="me_checkin">Mood and journal</string>
-    <string name="me_checkin_detail">Check in and write one line about your day</string>
+    <string name="me_checkin_detail">Check in and write a line a day</string>
     <string name="me_health">Health log</string>
     <string name="me_health_detail">Illness and medicines</string>
     <string name="me_weight">Weight</string>
     <string name="me_weight_detail">Weekly weigh-ins</string>
     <string name="me_cycle">Period tracker</string>
-    <string name="me_cycle_detail">Log your period and see when the next is due</string>
+    <string name="me_cycle_detail">Log periods and see the next one</string>
     <string name="settings_cycle">Period tracker</string>
     <string name="settings_cycle_detail">Shows under Me, never on Today. On by default for women.</string>
     <string name="me_about">About you</string>
-    <string name="me_about_detail">Used only to estimate calories burned</string>
+    <string name="me_about_detail">Only used to estimate calories</string>
     <string name="me_notifications">Notifications</string>
     <string name="me_notifications_detail">Choose which ones, and when</string>
     <string name="me_battery">Keep Loop running</string>
@@ -101,14 +101,16 @@
 
     <string name="data_title">Backup and export</string>
     <string name="data_backup_title">Automatic backup</string>
-    <string name="data_backup_body">If Google backup is on for this phone, Android backs up Loop\'s data to your own Google Drive about once a day. Your PIN and food photo key are never included.</string>
+    <string name="data_backup_body">If Google backup is on for this phone, Android backs up Loop\'s data to your own Google Drive about once a day. Your PIN, food photo key and meal photos are never included, so after a restore you set the app lock up again.</string>
     <string name="data_export">Export to a file</string>
-    <string name="data_export_body">Saves everything as a JSON file you can keep or move to another phone.</string>
+    <string name="data_export_body">Saves everything as a JSON file you can keep or move to another phone. The file isn\'t encrypted and holds your journal, health log and places, so keep it somewhere private.</string>
     <string name="data_import">Import a file</string>
     <string name="data_import_body">Replaces what\'s on this phone with the file\'s contents.</string>
     <string name="data_exported">Exported. Keep the file somewhere safe.</string>
     <string name="data_imported">Imported %1$d days, %2$d meals and %3$d check-ins.</string>
-    <string name="data_failed">That didn\'t work: %1$s</string>
+    <string name="data_export_failed">Couldn\'t save the export. Try again, or choose another place to save it.</string>
+    <string name="data_import_failed">Couldn\'t read that file. Try again, or choose another export file.</string>
+    <string name="data_delete_failed">Couldn\'t delete everything. Try again.</string>
     <string name="data_import_confirm_title">Replace your data?</string>
     <string name="data_import_confirm_body">Everything on this phone will be replaced by the file. This can\'t be undone.</string>
     <string name="data_import_confirm">Replace my data</string>
@@ -139,6 +141,6 @@
     <string name="settings_work_hours_value">%1$s to %2$s, Monday to Friday. Used for focus time.</string>
     <string name="settings_work_start">Work starts</string>
     <string name="settings_work_end">Work ends</string>
-    <string name="settings_next">Next</string>
+    <string name="settings_next">Set end time</string>
     <string name="settings_tracking">Tracking</string>
 </resources>

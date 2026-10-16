@@ -89,7 +89,7 @@ internal fun ApiKeyScreen(onBack: () -> Unit, viewModel: ApiKeyViewModel = hiltV
                 },
             )
             if (state.savedHint != null) {
-                QuietButton(stringResource(R.string.api_key_remove), onClick = viewModel::remove)
+                QuietButton(stringResource(R.string.api_key_remove), onClick = viewModel::remove, alignToText = true)
             }
             Text(
                 stringResource(R.string.api_key_storage_note),

@@ -2,7 +2,9 @@ package app.loop.feature.applock
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import app.loop.core.domain.repository.PinRepository
 import app.loop.core.domain.repository.SettingsRepository
+import app.loop.core.domain.usecase.PinAttempts
 import app.loop.core.model.ThemeMode
 import app.loop.core.model.TrackerId
 import app.loop.core.model.UserSettings
@@ -17,18 +19,21 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppLockManagerTest {
     private val settings = FakeSettings()
+    private val pins = FakePins()
     private val clock = MutableClock()
     private val owner = object : LifecycleOwner {
         override val lifecycle: Lifecycle get() = error("not used")
     }
 
     private fun TestScope.manager() =
-        AppLockManager(settings, clock, backgroundScope).also { it.observeSettings() }
+        AppLockManager(settings, pins, clock, backgroundScope).also { it.observeSettings() }
 
     @Test
     fun `cold start with the lock on starts locked`() = runTest(UnconfinedTestDispatcher()) {
@@ -77,6 +82,72 @@ class AppLockManagerTest {
 
         assertEquals(LockState.UNLOCKED, lock.state.value)
     }
+
+    @Test
+    fun `a restored lock without its PIN turns itself off instead of locking you out`() = runTest(UnconfinedTestDispatcher()) {
+        pins.has.value = false
+        settings.state.update { it.copy(appLockEnabled = true, biometricUnlockEnabled = true) }
+
+        val lock = manager()
+
+        assertEquals(LockState.UNLOCKED, lock.state.value)
+        assertFalse(settings.state.value.appLockEnabled)
+        assertFalse(settings.state.value.biometricUnlockEnabled)
+        assertTrue(lock.lockReset.value)
+    }
+
+    @Test
+    fun `confirming runs the action only after unlocking`() = runTest(UnconfinedTestDispatcher()) {
+        settings.state.update { it.copy(appLockEnabled = true) }
+        val lock = manager()
+        lock.unlock()
+        var ran = false
+
+        lock.confirm { ran = true }
+        assertEquals(LockState.CONFIRMING, lock.state.value)
+        assertFalse(ran)
+
+        lock.unlock()
+        assertTrue(ran)
+        assertEquals(LockState.UNLOCKED, lock.state.value)
+    }
+
+    @Test
+    fun `cancelling a confirmation drops the action`() = runTest(UnconfinedTestDispatcher()) {
+        settings.state.update { it.copy(appLockEnabled = true) }
+        val lock = manager()
+        lock.unlock()
+        var ran = false
+
+        lock.confirm { ran = true }
+        lock.cancelConfirm()
+        lock.unlock()
+
+        assertFalse(ran)
+        assertEquals(LockState.UNLOCKED, lock.state.value)
+    }
+
+    @Test
+    fun `with the lock off, confirming runs at once`() = runTest(UnconfinedTestDispatcher()) {
+        val lock = manager()
+        var ran = false
+
+        lock.confirm { ran = true }
+
+        assertTrue(ran)
+        assertEquals(LockState.UNLOCKED, lock.state.value)
+    }
+}
+
+private class FakePins : PinRepository {
+    val has = MutableStateFlow(true)
+    override val hasPin = has
+    override suspend fun setPin(pin: String) = Unit
+    override suspend fun verifyPin(pin: String) = true
+    override suspend fun pinLength(): Int? = 4
+    override suspend fun clearPin() = Unit
+    override suspend fun attempts() = PinAttempts()
+    override suspend fun saveAttempts(attempts: PinAttempts) = Unit
 }
 
 private class MutableClock(private var now: Long = 1_000_000) : Clock() {

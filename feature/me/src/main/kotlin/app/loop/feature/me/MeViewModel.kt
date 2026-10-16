@@ -3,6 +3,7 @@ package app.loop.feature.me
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.loop.core.domain.repository.ApiKeyRepository
+import app.loop.core.domain.repository.AppLockGate
 import app.loop.core.domain.repository.PermissionRepository
 import app.loop.core.domain.repository.PinRepository
 import app.loop.core.domain.repository.ProfileRepository
@@ -57,6 +58,7 @@ class MeViewModel @Inject constructor(
 class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val pins: PinRepository,
+    private val lock: AppLockGate,
     profiles: ProfileRepository,
 ) : ViewModel() {
     val settings: StateFlow<UserSettings> = settingsRepository.settings
@@ -69,11 +71,16 @@ class SettingsViewModel @Inject constructor(
 
     fun setTheme(mode: ThemeMode) = viewModelScope.launch { settingsRepository.setThemeMode(mode) }
 
-    /** Turning the lock off forgets the PIN; turning it on goes through PIN setup instead. */
-    fun turnOffAppLock() = viewModelScope.launch {
-        settingsRepository.setAppLockEnabled(false)
-        settingsRepository.setBiometricUnlockEnabled(false)
-        pins.clearPin()
+    /**
+     * Turning the lock off asks for the PIN first (so someone handed the unlocked phone can't), then
+     * forgets it. Turning it on goes through PIN setup instead.
+     */
+    fun turnOffAppLock() = lock.confirm {
+        viewModelScope.launch {
+            settingsRepository.setAppLockEnabled(false)
+            settingsRepository.setBiometricUnlockEnabled(false)
+            pins.clearPin()
+        }
     }
 
     fun setBiometric(enabled: Boolean) = viewModelScope.launch { settingsRepository.setBiometricUnlockEnabled(enabled) }

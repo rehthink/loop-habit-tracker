@@ -2,7 +2,7 @@
 <resources>
     <string name="fd_title">Food and drinks</string>
     <string name="fd_today_kcal">%1$s eaten today</string>
-    <string name="fd_no_meals">Nothing logged yet today.</string>
+    <string name="fd_no_meals">Nothing logged yet today</string>
     <string name="fd_burned">About %1$s kcal burned so far today (resting plus activity).</string>
     <string name="fd_burned_missing">Add your height, year of birth and weight in Me to see calories burned.</string>
     <string name="fd_snap">Snap a meal</string>
@@ -16,8 +16,8 @@
     <string name="fd_glass">glass</string>
     <string name="fd_tea">Tea</string>
     <string name="fd_coffee">Coffee</string>
-    <string name="fd_add_tea">+1 tea</string>
-    <string name="fd_add_coffee">+1 coffee</string>
+    <string name="fd_add_tea">Add tea</string>
+    <string name="fd_add_coffee">Add coffee</string>
     <string name="fd_drinks_count">%1$d tea · %2$d coffee today</string>
     <string name="fd_pending">%1$d photos waiting</string>
     <string name="fd_pending_one">1 photo waiting</string>

@@ -4,6 +4,7 @@ import app.loop.core.data.permission.AndroidPermissionChecker
 import app.loop.core.domain.ApplicationScope
 import app.loop.core.domain.repository.HealthConnectGateway
 import app.loop.core.domain.repository.PermissionRepository
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.model.LoopPermission
 import app.loop.core.model.PermissionState
 import app.loop.core.model.PermissionStatus
@@ -36,7 +37,7 @@ internal class PermissionRepositoryImpl @Inject constructor(
         scope.launch {
             healthStatus = when (healthConnect.availability()) {
                 HealthConnectGateway.Availability.AVAILABLE ->
-                    if (runCatching { healthConnect.hasAllPermissions() }.getOrDefault(false)) PermissionStatus.GRANTED else PermissionStatus.DENIED
+                    if (runSuspendCatching { healthConnect.hasAllPermissions() }.getOrDefault(false)) PermissionStatus.GRANTED else PermissionStatus.DENIED
                 else -> PermissionStatus.UNAVAILABLE
             }
             _states.value = readAll()

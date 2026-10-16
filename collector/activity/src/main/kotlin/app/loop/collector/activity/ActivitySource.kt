@@ -7,6 +7,8 @@ import android.content.Intent
 import app.loop.core.domain.repository.RawEventRepository
 import app.loop.core.domain.repository.SettingsRepository
 import app.loop.core.domain.repository.SleepRepository
+import app.loop.core.domain.runSuspendCatching
+import app.loop.core.domain.tracker.RegistrationGate
 import app.loop.core.domain.tracker.TrackerSource
 import app.loop.core.model.DailySummaryPatch
 import app.loop.core.model.DayClock
@@ -34,25 +36,29 @@ class ActivitySource @Inject constructor(
     private val rawEvents: RawEventRepository,
     private val sleep: SleepRepository,
     private val settings: SettingsRepository,
+    private val gate: RegistrationGate,
     private val clock: Clock,
 ) : TrackerSource {
     override val id = TrackerId.MOVEMENT
     override val requiredPermissions = setOf(LoopPermission.PHYSICAL_ACTIVITY)
 
+    /** Registers (again) only when the registration may be gone; see [RegistrationGate]. */
     @SuppressLint("MissingPermission") // Checked by RefreshUseCase through requiredPermissions.
     override suspend fun collect() {
-        val types = listOf(Activities.WALKING, Activities.RUNNING, Activities.ON_BICYCLE, Activities.STILL, Activities.IN_VEHICLE)
-        val transitions = types.flatMap { type ->
+        if (gate.isCurrent(GATE, REQUEST)) return
+        val transitions = TYPES.flatMap { type ->
             listOf(ActivityTransition.ACTIVITY_TRANSITION_ENTER, ActivityTransition.ACTIVITY_TRANSITION_EXIT).map {
                 ActivityTransition.Builder().setActivityType(type).setActivityTransition(it).build()
             }
         }
-        runCatching {
+        runSuspendCatching {
             ActivityRecognition.getClient(context)
                 .requestActivityTransitionUpdates(ActivityTransitionRequest(transitions), pendingIntent(context))
                 .await()
-        }
+        }.onSuccess { gate.markRegistered(GATE, REQUEST) }
     }
+
+    override suspend fun onUnavailable() = gate.invalidate(GATE)
 
     override suspend fun summarize(day: LocalDate, zone: ZoneId): DailySummaryPatch {
         val window = DayClock.window(day, zone, settings.settings.first().dayBoundary)
@@ -68,6 +74,9 @@ class ActivitySource @Inject constructor(
 
     companion object {
         private const val LOOKBACK = 6 * 60 * 60_000L
+        private const val GATE = "activity_transitions"
+        private val TYPES = listOf(Activities.WALKING, Activities.RUNNING, Activities.ON_BICYCLE, Activities.STILL, Activities.IN_VEHICLE)
+        private val REQUEST = TYPES.joinToString(",")
 
         internal fun pendingIntent(context: Context): PendingIntent = PendingIntent.getBroadcast(
             context,

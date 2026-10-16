@@ -10,3 +10,8 @@ build/
 .cxx
 *.apk
 *.aab
+
+# Signing keys and their passwords never go in the repo
+*.jks
+*.keystore
+keystore.properties

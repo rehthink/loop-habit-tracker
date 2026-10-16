@@ -39,6 +39,9 @@ class StepsSource @Inject constructor(
     override val id = TrackerId.MOVEMENT
     override val requiredPermissions = setOf(LoopPermission.PHYSICAL_ACTIVITY)
 
+    /** One reading from the step counter: cheap, and Today's Move ring should be current when it opens. */
+    override val quick = true
+
     override suspend fun collect() {
         val total = readCounter() ?: return
         rawEvents.insertAll(listOf(RawEvent(type = RawEventType.STEP, value = total.toDouble(), startTime = clock.millis(), zoneId = clock.zone.id)))

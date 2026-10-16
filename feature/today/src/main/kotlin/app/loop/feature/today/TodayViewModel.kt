@@ -10,6 +10,7 @@ import app.loop.core.domain.repository.PermissionRepository
 import app.loop.core.domain.repository.ProfileRepository
 import app.loop.core.domain.repository.SettingsRepository
 import app.loop.core.domain.repository.SummaryRepository
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.domain.usecase.RefreshUseCase
 import app.loop.core.model.Area
 import app.loop.core.model.DayClock
@@ -68,10 +69,14 @@ data class TodayUiState(
     val challenge: Challenge? = null,
     val missingSetup: List<LoopPermission> = emptyList(),
     val celebrate: Area? = null,
+    /** False until today's data has been read once: placeholders stay neutral rather than saying "no data". */
+    val loaded: Boolean = false,
+    /** False until the insight and challenge have been worked out. */
+    val extrasLoaded: Boolean = false,
 )
 
 /** Background-computed parts that need history (insight, challenge). */
-private data class Extras(val insight: String? = null, val challenge: Challenge? = null)
+private data class Extras(val insight: String? = null, val challenge: Challenge? = null, val loaded: Boolean = false)
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -112,6 +117,8 @@ class TodayViewModel @Inject constructor(
                 challenge = extra.challenge,
                 missingSetup = missing(perms),
                 celebrate = celebrating,
+                loaded = true,
+                extrasLoaded = extra.loaded,
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initial())
@@ -120,7 +127,8 @@ class TodayViewModel @Inject constructor(
 
     /** Collect fresh data, then work out the insight, challenge and any ring that just closed. */
     fun onResume() = viewModelScope.launch {
-        runCatching { refresh() }
+        // Quick and throttled: screen time and steps only; the rest comes with the 15-minute tick.
+        runSuspendCatching { refresh(RefreshUseCase.Mode.QUICK) }
         val prefs = settings.settings.first()
         val date = DayClock.today(clock.millis(), clock.zone, prefs.dayBoundary)
         val history = summaries.range(date.minusDays(60), date)
@@ -132,20 +140,22 @@ class TodayViewModel @Inject constructor(
         extras.value = Extras(
             insight = InsightsEngine().analyze(history, date).insights.firstOrNull()?.text,
             challenge = Challenges.current(GamificationInput(history, goalList, mealDates, checkInDates, date)),
+            loaded = true,
         )
         checkClosedRings(history.firstOrNull { it.date == date }, goalList, date)
     }
 
     private suspend fun checkClosedRings(today: DaySummary?, goalList: List<Goal>, date: LocalDate) {
         today ?: return
-        val key = "rings_celebrated_${date.toEpochDay()}"
-        val done = state.getLong(key) ?: 0L
+        // One entry, not one per day: the day in the high bits, celebrated areas as a bit mask below.
+        val saved = state.getLong(RINGS_CELEBRATED)
+        val done = if (saved != null && saved shr 8 == date.toEpochDay()) saved and 0xFF else 0L
         val progress = Scoring.ringProgress(today, goalList)
         // Screen "closes" by staying under the limit, so only Move, Sleep and Fuel celebrate.
         val newlyClosed = listOf(Area.MOVE, Area.SLEEP, Area.FUEL).firstOrNull { area ->
             (progress[area] ?: 0f) >= 1f && done and (1L shl area.ordinal) == 0L
         } ?: return
-        state.setLong(key, done or (1L shl newlyClosed.ordinal))
+        state.setLong(RINGS_CELEBRATED, (date.toEpochDay() shl 8) or done or (1L shl newlyClosed.ordinal))
         celebrate.value = newlyClosed
     }
 
@@ -185,6 +195,8 @@ class TodayViewModel @Inject constructor(
     private fun zoneOf(id: String, fallback: ZoneId) = runCatching { ZoneId.of(id) }.getOrDefault(fallback)
 
     companion object {
+        private const val RINGS_CELEBRATED = "rings_celebrated"
+
         fun greetingFor(time: LocalTime): Greeting = when (time.hour) {
             in 4..11 -> Greeting.MORNING
             in 12..16 -> Greeting.AFTERNOON

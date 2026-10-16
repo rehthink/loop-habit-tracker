@@ -9,12 +9,13 @@ import java.io.File
 
 /**
  * Meal photos: shrunk so the longest side is ~1024 px and saved as JPEG in app-private storage
- * (never backed up, never logged). Small photos keep Gemini fast and light on tokens.
+ * (never backed up, never logged). Small photos keep Gemini fast and light on tokens. A photo is
+ * deleted with its meal, when its review closes unsaved, or after 30 days (the weekly cleanup).
  */
 internal object PhotoStore {
     private const val LONGEST_SIDE = 1024
     private const val QUALITY = 80
-    private const val DIR = "meal_photos" // matches BackupRepositoryImpl.MEAL_PHOTO_DIR
+    private const val DIR = "meal_photos" // matches MealPhotoFiles.DIR in :core:data, which prunes it
 
     fun compress(source: Bitmap, rotationDegrees: Int): ByteArray {
         val scale = LONGEST_SIDE.toFloat() / maxOf(source.width, source.height)
@@ -36,6 +37,10 @@ internal object PhotoStore {
     }
 
     fun read(path: String): ByteArray? = File(path).takeIf { it.exists() }?.readBytes()
+
+    fun delete(path: String) {
+        File(path).delete()
+    }
 
     /** A small preview for the review card. */
     fun thumbnail(path: String, targetPx: Int = 600): Bitmap? {

@@ -8,6 +8,7 @@ import app.loop.core.domain.Dispatcher
 import app.loop.core.domain.LoopDispatcher
 import app.loop.core.domain.repository.ApiKeyRepository
 import app.loop.core.domain.repository.PinRepository
+import app.loop.core.domain.usecase.PinAttempts
 import app.loop.core.domain.usecase.PinRules
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -32,6 +33,7 @@ internal class PinRepositoryImpl @Inject constructor(
         val encoded = withContext(cpu) { hasher.hash(pin) }
         store.putString(SecureStore.KEY_PIN_HASH, encoded)
         store.putString(SecureStore.KEY_PIN_LENGTH, pin.length.toString())
+        saveAttempts(PinAttempts())
     }
 
     override suspend fun verifyPin(pin: String): Boolean {
@@ -44,6 +46,17 @@ internal class PinRepositoryImpl @Inject constructor(
     override suspend fun clearPin() {
         store.putString(SecureStore.KEY_PIN_HASH, null)
         store.putString(SecureStore.KEY_PIN_LENGTH, null)
+        saveAttempts(PinAttempts())
+    }
+
+    override suspend fun attempts(): PinAttempts = PinAttempts(
+        failures = store.getString(SecureStore.KEY_PIN_FAILURES)?.toIntOrNull() ?: 0,
+        lockedUntil = store.getString(SecureStore.KEY_PIN_LOCKED_UNTIL)?.toLongOrNull() ?: 0,
+    )
+
+    override suspend fun saveAttempts(attempts: PinAttempts) {
+        store.putString(SecureStore.KEY_PIN_FAILURES, attempts.failures.takeIf { it > 0 }?.toString())
+        store.putString(SecureStore.KEY_PIN_LOCKED_UNTIL, attempts.lockedUntil.takeIf { it > 0 }?.toString())
     }
 }
 

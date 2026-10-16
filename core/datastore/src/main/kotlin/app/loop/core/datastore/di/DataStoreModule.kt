@@ -5,6 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import app.loop.core.datastore.CollectorStateStore
+import app.loop.core.datastore.MoveCollectorStateOutOfSettings
 import app.loop.core.domain.ApplicationScope
 import app.loop.core.domain.Dispatcher
 import app.loop.core.domain.LoopDispatcher
@@ -34,5 +36,22 @@ internal object DataStoreModule {
     ): DataStore<Preferences> = PreferenceDataStoreFactory.create(
         scope = scope + io,
         produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES) },
+    )
+
+    /** Not in the Auto Backup rules, so never backed up. */
+    const val COLLECTOR_STATE = "collector_state"
+
+    @Provides
+    @Singleton
+    @CollectorStateStore
+    fun collectorState(
+        @ApplicationContext context: Context,
+        @Dispatcher(LoopDispatcher.IO) io: CoroutineDispatcher,
+        @ApplicationScope scope: CoroutineScope,
+        settings: DataStore<Preferences>,
+    ): DataStore<Preferences> = PreferenceDataStoreFactory.create(
+        migrations = listOf(MoveCollectorStateOutOfSettings(settings)),
+        scope = scope + io,
+        produceFile = { context.preferencesDataStoreFile(COLLECTOR_STATE) },
     )
 }

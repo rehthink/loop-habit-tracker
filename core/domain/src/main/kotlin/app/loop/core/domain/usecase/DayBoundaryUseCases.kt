@@ -2,6 +2,7 @@ package app.loop.core.domain.usecase
 
 import app.loop.core.domain.repository.SettingsRepository
 import app.loop.core.domain.repository.SummaryRepository
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.model.DayClock
 import app.loop.core.model.DaySummary
 import java.time.Clock
@@ -21,7 +22,7 @@ class AggregateTodayUseCase @Inject constructor(
     suspend fun today(): LocalDate = DayClock.today(clock.millis(), clock.zone, settings.settings.first().dayBoundary)
 
     suspend operator fun invoke() {
-        runCatching { aggregate(today()) }
+        runSuspendCatching { aggregate(today()) }
     }
 }
 

@@ -35,8 +35,8 @@ import kotlinx.serialization.json.jsonPrimitive
 /** User foods get ids above this, so they never clash with bundled food ids in meal items. */
 internal const val CUSTOM_FOOD_ID_OFFSET = 1_000_000_000L
 
-internal fun RawEventEntity.toModel() = RawEvent(id, type, packageName, value, startTime, endTime, zoneId)
-internal fun RawEvent.toEntity() = RawEventEntity(id, type, packageName, value, startTime, endTime, zoneId)
+internal fun RawEventEntity.toModel() = RawEvent(id, type, packageName, value, startTime, endTime, zoneId, tag)
+internal fun RawEvent.toEntity() = RawEventEntity(id, type, packageName, value, startTime, endTime, zoneId, tag)
 
 internal fun SleepSessionEntity.toModel() = SleepSession(id, start, end, zoneId, source, confirmed)
 internal fun SleepSession.toEntity() = SleepSessionEntity(id, start, end, zoneId, source, confirmed)

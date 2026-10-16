@@ -45,12 +45,13 @@ class LoopApplication : Application(), Configuration.Provider {
     }
 
     /**
-     * While Loop's process is alive, an unlock triggers a screen-time read (the spec's "on unlock").
-     * Manifest receivers can't get this broadcast, so the 15-minute tick covers the rest.
+     * While Loop's process is alive, an unlock triggers a quick screen-time read (the spec's "on
+     * unlock"), throttled to one every couple of minutes. Manifest receivers can't get this
+     * broadcast, so the 15-minute tick covers the rest.
      */
     private fun listenForUnlocks() {
         val receiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) = TickWorker.runSoon(context)
+            override fun onReceive(context: Context, intent: Intent) = TickWorker.runQuick(context)
         }
         ContextCompat.registerReceiver(this, receiver, IntentFilter(Intent.ACTION_USER_PRESENT), ContextCompat.RECEIVER_NOT_EXPORTED)
     }

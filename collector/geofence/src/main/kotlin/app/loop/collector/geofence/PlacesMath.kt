@@ -4,7 +4,7 @@ import app.loop.core.model.PlaceKind
 import app.loop.core.model.RawEvent
 import app.loop.core.model.RawEventType
 
-/** Pure helpers over geofence raw events (packageName = PlaceKind name). */
+/** Pure helpers over geofence raw events (tag = PlaceKind name). */
 object PlacesMath {
     /** A trip longer than this isn't a commute (e.g. went somewhere else on the way). */
     const val MAX_COMMUTE_MIN = 180L
@@ -12,7 +12,7 @@ object PlacesMath {
     /** Gym visits shorter than this aren't workouts (e.g. walked past). */
     const val MIN_GYM_MINUTES = 20L
 
-    private fun RawEvent.place() = packageName?.let { p -> PlaceKind.entries.firstOrNull { it.name == p } }
+    private fun RawEvent.place() = tag?.let { p -> PlaceKind.entries.firstOrNull { it.name == p } }
 
     /**
      * Commute = home → office in the morning plus office → home in the evening, from the last
@@ -34,11 +34,15 @@ object PlacesMath {
         return total.toInt().takeIf { it > 0 }
     }
 
-    /** The visit that ended with [exit], if it was long enough to count as a gym workout. */
+    /**
+     * The visit that ended with [exit], if it was long enough to count as a gym workout. The visit
+     * starts at the first arrival since the previous leaving: a repeated "arrived" (fences being
+     * re-added while you're inside) doesn't restart it.
+     */
     fun gymVisit(events: List<RawEvent>, exit: RawEvent): LongRange? {
-        val enter = events.filter { it.startTime < exit.startTime && it.place() == PlaceKind.GYM }
-            .maxByOrNull { it.startTime }
-            ?.takeIf { it.type == RawEventType.GEOFENCE_ENTER } ?: return null
+        val gym = events.filter { it.startTime < exit.startTime && it.place() == PlaceKind.GYM }.sortedBy { it.startTime }
+        val previousExit = gym.lastOrNull { it.type == RawEventType.GEOFENCE_EXIT }?.startTime ?: Long.MIN_VALUE
+        val enter = gym.firstOrNull { it.type == RawEventType.GEOFENCE_ENTER && it.startTime > previousExit } ?: return null
         val minutes = (exit.startTime - enter.startTime) / 60_000
         return if (minutes >= MIN_GYM_MINUTES) enter.startTime until exit.startTime else null
     }

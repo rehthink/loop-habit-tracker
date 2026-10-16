@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.LinearProgressIndicator
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -34,7 +36,7 @@ import androidx.navigation.compose.composable
 import app.loop.core.designsystem.component.AreaRing
 import app.loop.core.designsystem.component.Celebration
 import app.loop.core.designsystem.component.LoopCard
-import app.loop.core.designsystem.component.QuietButton
+import app.loop.core.designsystem.component.CardAction
 import app.loop.core.designsystem.theme.LoopTheme
 import app.loop.core.model.Area
 import app.loop.core.model.LoopPermission
@@ -94,10 +96,13 @@ internal fun TodayContent(
         Header(state)
         RingsCard(state, onOpenArea)
         if (state.missingSetup.isNotEmpty()) SetupCard(state.missingSetup, onSetUp)
-        HabitScoreCard(state.habitScore)
+        HabitScoreCard(state.habitScore, state.loaded)
         InfoCard(
             title = stringResource(R.string.today_insight_title),
-            body = state.insight ?: stringResource(R.string.today_insight_empty),
+            body = when {
+                !state.extrasLoaded -> LOADING
+                else -> state.insight ?: stringResource(R.string.today_insight_empty)
+            },
         )
         ChallengeCard(state)
         // Room for the quick-log button.
@@ -144,7 +149,10 @@ private fun RingsCard(state: TodayUiState, onOpenArea: (Area) -> Unit) {
                         ) {
                             AreaRing(
                                 label = ring.area.label(),
-                                value = ring.value?.text() ?: stringResource(R.string.today_no_data),
+                                value = when {
+                                    !state.loaded -> LOADING
+                                    else -> ring.value?.text() ?: stringResource(R.string.today_no_data)
+                                },
                                 progress = ring.progress,
                                 color = ring.area.color(),
                                 trackAlpha = trackAlpha,
@@ -174,29 +182,33 @@ private fun RingValue.text(): String = when (this) {
 private fun SetupCard(missing: List<LoopPermission>, onSetUp: () -> Unit) {
     LoopCard(Modifier.fillMaxWidth(), onClick = onSetUp) {
         Text(stringResource(R.string.today_setup_title), style = MaterialTheme.typography.titleSmall)
+        Spacer(Modifier.height(4.dp))
         Text(
             stringResource(R.string.today_setup_body, missing.map { stringResource(it.copy.title) }.joinToString(" · ")),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        QuietButton(stringResource(R.string.today_setup_action), onClick = onSetUp)
+        CardAction(stringResource(R.string.today_setup_action))
     }
 }
 
 @Composable
-private fun HabitScoreCard(score: Int?) {
+private fun HabitScoreCard(score: Int?, loaded: Boolean) {
     LoopCard(Modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             Text(
                 text = score?.toString() ?: "–",
                 style = MaterialTheme.typography.displayMedium,
-                color = if (score == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
+                // A missing score is a quiet placeholder, not a number to read.
+                color = if (score == null) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f) else MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.widthIn(min = 56.dp),
+                textAlign = TextAlign.Center,
             )
-            Column(Modifier.weight(1f)) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(stringResource(R.string.today_score_title), style = MaterialTheme.typography.titleSmall)
                 Text(
-                    text = stringResource(if (score == null) R.string.today_score_empty else R.string.today_score_hint),
-                    style = MaterialTheme.typography.bodySmall,
+                    text = if (!loaded) LOADING else stringResource(if (score == null) R.string.today_score_empty else R.string.today_score_hint),
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
@@ -210,7 +222,9 @@ private fun ChallengeCard(state: TodayUiState) {
     LoopCard(Modifier.fillMaxWidth()) {
         Text(stringResource(R.string.today_challenge_title), style = MaterialTheme.typography.titleSmall)
         Spacer(Modifier.height(4.dp))
-        if (challenge == null) {
+        if (!state.extrasLoaded) {
+            Text(LOADING, style = MaterialTheme.typography.bodyMedium)
+        } else if (challenge == null) {
             Text(stringResource(R.string.today_challenge_empty), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         } else {
             val color = challenge.area.color()
@@ -243,12 +257,15 @@ private fun InfoCard(title: String, body: String) {
     }
 }
 
+/** Holds a line's height while data loads, so nothing claims "no data" or jumps when it arrives. */
+private const val LOADING = " "
+
 @Preview(showBackground = true)
 @Composable
 private fun TodayPreview() {
     LoopTheme {
         TodayContent(
-            TodayUiState(Greeting.MORNING, "Asha", LocalDate.of(2026, 10, 14)),
+            TodayUiState(Greeting.MORNING, "Asha", LocalDate.of(2026, 10, 14), loaded = true, extrasLoaded = true),
             PaddingValues(),
         )
     }

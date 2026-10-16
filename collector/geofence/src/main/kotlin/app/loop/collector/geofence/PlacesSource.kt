@@ -9,6 +9,8 @@ import app.loop.core.domain.repository.GeofenceRegistrar
 import app.loop.core.domain.repository.PlacesRepository
 import app.loop.core.domain.repository.RawEventRepository
 import app.loop.core.domain.repository.SettingsRepository
+import app.loop.core.domain.runSuspendCatching
+import app.loop.core.domain.tracker.RegistrationGate
 import app.loop.core.domain.tracker.TrackerSource
 import app.loop.core.model.DailySummaryPatch
 import app.loop.core.model.DayClock
@@ -29,25 +31,40 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Office, home and gym through the Geofencing API: Android tells Loop on arrival and leaving, so
- * GPS is never left running. collect() (re)registers the fences, which also covers reboots.
+ * GPS is never left running.
+ *
+ * collect() re-registers the fences only when [RegistrationGate] says they may be gone (a reboot,
+ * an app update, a day passed, or location was switched off). Re-adding a fence you're inside
+ * fires an "arrived" event, so doing it every tick used to restart every gym visit.
  */
 class PlacesSource @Inject constructor(
     @ApplicationContext private val context: Context,
     private val places: PlacesRepository,
     private val rawEvents: RawEventRepository,
     private val settings: SettingsRepository,
+    private val gate: RegistrationGate,
 ) : TrackerSource, GeofenceRegistrar, CurrentLocationProvider {
     override val id = TrackerId.PLACES
     override val requiredPermissions = setOf(LoopPermission.LOCATION, LoopPermission.BACKGROUND_LOCATION)
 
-    override suspend fun collect() = sync()
+    override suspend fun collect() = register(placesChanged = false)
+
+    /** Places were saved or removed: register now. */
+    override suspend fun sync() = register(placesChanged = true)
+
+    override suspend fun onUnavailable() = gate.invalidate(GATE)
 
     @SuppressLint("MissingPermission") // Callers check LOCATION + BACKGROUND_LOCATION first.
-    override suspend fun sync() {
-        val client = LocationServices.getGeofencingClient(context)
+    private suspend fun register(placesChanged: Boolean) {
         val saved = places.saved()
-        runCatching { client.removeGeofences(pendingIntent(context)).await() }
-        if (saved.isEmpty()) return
+        val request = saved.sortedBy { it.kind }.joinToString(";") { "${it.kind}:${it.latitude}:${it.longitude}:${it.radiusMeters}" }
+        if (!placesChanged && gate.isCurrent(GATE, request)) return
+        val client = LocationServices.getGeofencingClient(context)
+        runSuspendCatching { client.removeGeofences(pendingIntent(context)).await() }
+        if (saved.isEmpty()) {
+            gate.markRegistered(GATE, request)
+            return
+        }
         val fences = saved.map { p ->
             Geofence.Builder()
                 .setRequestId(p.kind.name)
@@ -58,15 +75,18 @@ class PlacesSource @Inject constructor(
                 .setNotificationResponsiveness(120_000)
                 .build()
         }
-        val request = GeofencingRequest.Builder()
-            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+        val geofencing = GeofencingRequest.Builder()
+            // Only new places report "already inside" (saving the office while at the office).
+            // Re-adding after a reboot stays quiet, so it doesn't log a made-up arrival.
+            .setInitialTrigger(if (placesChanged) GeofencingRequest.INITIAL_TRIGGER_ENTER else 0)
             .addGeofences(fences)
             .build()
-        runCatching { client.addGeofences(request, pendingIntent(context)).await() }
+        runSuspendCatching { client.addGeofences(geofencing, pendingIntent(context)).await() }
+            .onSuccess { gate.markRegistered(GATE, request) }
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun current(): CurrentLocationProvider.Fix? = runCatching {
+    override suspend fun current(): CurrentLocationProvider.Fix? = runSuspendCatching {
         withTimeoutOrNull(20_000) {
             LocationServices.getFusedLocationProviderClient(context)
                 .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
@@ -89,6 +109,7 @@ class PlacesSource @Inject constructor(
 
     companion object {
         private const val REQUEST_CODE = 4102
+        internal const val GATE = "geofences"
 
         internal fun pendingIntent(context: Context): PendingIntent = PendingIntent.getBroadcast(
             context,

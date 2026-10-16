@@ -9,6 +9,7 @@ import app.loop.core.domain.repository.PlacesRepository
 import app.loop.core.domain.repository.RawEventRepository
 import app.loop.core.domain.repository.SettingsRepository
 import app.loop.core.domain.repository.WorkoutRepository
+import app.loop.core.domain.tracker.RegistrationGate
 import app.loop.core.model.DayClock
 import app.loop.core.model.Place
 import app.loop.core.model.PlaceKind
@@ -18,6 +19,7 @@ import app.loop.core.model.Workout
 import app.loop.core.model.WorkoutSource
 import app.loop.core.model.WorkoutType
 import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Clock
@@ -35,6 +37,7 @@ class GeofenceReceiver : BroadcastReceiver() {
     @Inject lateinit var workouts: WorkoutRepository
     @Inject lateinit var settings: SettingsRepository
     @Inject lateinit var notifier: ConfirmationNotifier
+    @Inject lateinit var gate: RegistrationGate
     @Inject lateinit var clock: Clock
 
     @Inject @ApplicationScope
@@ -42,7 +45,20 @@ class GeofenceReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val event = GeofencingEvent.fromIntent(intent) ?: return
-        if (event.hasError()) return
+        if (event.hasError()) {
+            // Location was switched off: Android has removed the fences. Add them again next tick.
+            if (event.errorCode == GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE) {
+                val pending = goAsync()
+                scope.launch {
+                    try {
+                        gate.invalidate(PlacesSource.GATE)
+                    } finally {
+                        pending.finish()
+                    }
+                }
+            }
+            return
+        }
         val type = when (event.geofenceTransition) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> RawEventType.GEOFENCE_ENTER
             Geofence.GEOFENCE_TRANSITION_EXIT -> RawEventType.GEOFENCE_EXIT
@@ -54,7 +70,7 @@ class GeofenceReceiver : BroadcastReceiver() {
         val pending = goAsync()
         scope.launch {
             try {
-                val raw = kinds.map { RawEvent(type = type, packageName = it.name, startTime = time, zoneId = zone) }
+                val raw = kinds.map { RawEvent(type = type, tag = it.name, startTime = time, zoneId = zone) }
                 rawEvents.insertAll(raw)
                 val date = DayClock.dateOf(time, ZoneId.of(zone), settings.settings.first().dayBoundary)
                 kinds.forEach { kind ->
@@ -64,7 +80,7 @@ class GeofenceReceiver : BroadcastReceiver() {
                             if (type == RawEventType.GEOFENCE_ENTER) places.recordArrival(date, place, time, zone)
                             else places.recordLeaving(date, place, time, zone)
                         }
-                        PlaceKind.GYM -> if (type == RawEventType.GEOFENCE_EXIT) logGymVisit(raw.first { it.packageName == kind.name })
+                        PlaceKind.GYM -> if (type == RawEventType.GEOFENCE_EXIT) logGymVisit(raw.first { it.tag == kind.name })
                     }
                 }
             } finally {

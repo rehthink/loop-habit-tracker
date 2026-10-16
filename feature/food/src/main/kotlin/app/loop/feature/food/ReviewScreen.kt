@@ -154,7 +154,7 @@ private fun IssueCard(issue: RecognitionIssue, canQueue: Boolean, queued: Boolea
         )
         when {
             queued -> Text(stringResource(R.string.rv_queued), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-            canQueue -> QuietButton(stringResource(R.string.rv_analyse_later), onClick = onQueue)
+            canQueue -> QuietButton(stringResource(R.string.rv_analyse_later), onClick = onQueue, alignToText = true)
         }
     }
 }

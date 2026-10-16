@@ -17,7 +17,7 @@
     <string name="sl_wake">Woke up</string>
     <string name="sl_save">Save</string>
     <string name="sl_cancel">Cancel</string>
-    <string name="sl_next">Next</string>
+    <string name="sl_next">Set wake time</string>
     <string name="sl_week">Last 7 nights</string>
     <string name="sl_week_avg">Average %1$s a night</string>
     <string name="sl_week_desc">Sleep for the last 7 nights. Average %1$s.</string>

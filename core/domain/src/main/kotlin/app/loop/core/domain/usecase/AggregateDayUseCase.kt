@@ -6,6 +6,7 @@ import app.loop.core.domain.repository.ProfileRepository
 import app.loop.core.domain.repository.SettingsRepository
 import app.loop.core.domain.repository.SummaryRepository
 import app.loop.core.domain.repository.WorkoutRepository
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.domain.tracker.TrackerSource
 import app.loop.core.model.DailySummaryPatch
 import app.loop.core.model.DayClock
@@ -38,7 +39,7 @@ class AggregateDayUseCase @Inject constructor(
         val zone = clock.zone
         val patches = sources
             .filter { prefs.isTrackerEnabled(it.id) }
-            .mapNotNull { source -> runCatching { source.id to source.summarize(date, zone) }.getOrNull() }
+            .mapNotNull { source -> runSuspendCatching { source.id to source.summarize(date, zone) }.getOrNull() }
 
         val merged = patches.fold(DailySummaryPatch(date)) { acc, (_, patch) -> acc.mergedWith(patch) }
         // Phone and watch can both count steps: the larger is the more complete picture.

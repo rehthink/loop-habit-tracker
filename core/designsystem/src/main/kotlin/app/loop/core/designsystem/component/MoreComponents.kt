@@ -44,6 +44,9 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 
+/** What screens show for a number that isn't known yet. */
+const val NO_VALUE = "–"
+
 /** A pushed screen: top bar with back, then a scrolling column with the standard gutters. */
 @Composable
 fun DetailScreen(
@@ -66,11 +69,12 @@ fun DetailScreen(
     }
 }
 
-/** One big number with a label: "6 h 40 m" / "Slept". */
+/** One big number with a label: "6 h 40 m" / "Slept". A missing value ("–") is drawn as a quiet placeholder. */
 @Composable
 fun StatTile(value: String, label: String, modifier: Modifier = Modifier, color: Color = MaterialTheme.colorScheme.onSurface) {
+    val missing = value == NO_VALUE
     Column(modifier.semantics(mergeDescendants = true) {}, verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(value, style = MaterialTheme.typography.headlineSmall, color = color)
+        Text(value, style = MaterialTheme.typography.headlineSmall, color = if (missing) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f) else color)
         Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

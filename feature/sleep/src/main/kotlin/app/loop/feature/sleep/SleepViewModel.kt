@@ -7,6 +7,7 @@ import app.loop.core.domain.repository.SleepReader
 import app.loop.core.domain.repository.SleepRepository
 import app.loop.core.domain.repository.SummaryRepository
 import app.loop.core.domain.usecase.AggregateDayUseCase
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.domain.usecase.RefreshUseCase
 import app.loop.core.model.DaySummary
 import app.loop.core.model.LoopPermission
@@ -48,7 +49,7 @@ class SleepViewModel @Inject constructor(
 
     fun onResume() = viewModelScope.launch {
         load()
-        runCatching { refresh() }
+        runSuspendCatching { refresh(RefreshUseCase.Mode.QUICK) }
         load()
     }
 

@@ -1,5 +1,6 @@
 package app.loop.core.data.repository
 
+import app.loop.core.datastore.CollectorStateDataSource
 import app.loop.core.datastore.UserPreferencesDataSource
 import app.loop.core.domain.repository.CollectorStateRepository
 import app.loop.core.domain.repository.SettingsRepository
@@ -30,7 +31,7 @@ internal class SettingsRepositoryImpl @Inject constructor(
 }
 
 internal class CollectorStateRepositoryImpl @Inject constructor(
-    private val dataSource: UserPreferencesDataSource,
+    private val dataSource: CollectorStateDataSource,
 ) : CollectorStateRepository {
     override suspend fun getLong(key: String) = dataSource.getLong(key)
     override suspend fun setLong(key: String, value: Long) { dataSource.setLong(key, value) }

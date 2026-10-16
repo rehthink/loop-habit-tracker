@@ -5,7 +5,7 @@
     <string name="tracker_movement">Movement</string>
     <string name="tracker_movement_detail">Steps, walks, workouts and sitting time</string>
     <string name="tracker_sleep">Sleep</string>
-    <string name="tracker_sleep_detail">Bedtime, wake time and how long you slept</string>
+    <string name="tracker_sleep_detail">Bedtime, wake time and hours slept</string>
     <string name="tracker_food">Food</string>
     <string name="tracker_food_detail">Meal photos and calories</string>
     <string name="tracker_water">Water and drinks</string>

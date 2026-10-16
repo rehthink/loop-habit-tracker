@@ -48,6 +48,13 @@
             </intent-filter>
         </activity>
 
+        <!-- Notification and widget taps come in here. Not exported, so only Loop can use it:
+             MainActivity ignores route extras that arrive any other way. -->
+        <activity-alias
+            android:name=".DeepLink"
+            android:exported="false"
+            android:targetActivity=".MainActivity" />
+
         <!-- Health Connect: how Loop uses the data (required to request its permissions). -->
         <activity
             android:name=".HealthPrivacyActivity"

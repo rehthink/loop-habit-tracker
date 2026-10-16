@@ -1,19 +1,17 @@
 package app.loop.feature.food
 
-import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import androidx.work.Constraints
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
+import app.loop.core.domain.ApplicationScope
+import app.loop.core.domain.Dispatcher
+import app.loop.core.domain.LoopDispatcher
 import app.loop.core.domain.food.FoodMatcher
 import app.loop.core.domain.repository.FoodRecognizer
 import app.loop.core.domain.repository.FoodRepository
 import app.loop.core.domain.repository.MealRepository
+import app.loop.core.domain.repository.PhotoAnalysisScheduler
 import app.loop.core.domain.repository.PortionMemory
 import app.loop.core.domain.usecase.AggregateTodayUseCase
 import app.loop.core.model.Food
@@ -21,10 +19,11 @@ import app.loop.core.model.Meal
 import app.loop.core.model.MealType
 import app.loop.core.model.PortionUnit
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.Clock
 import java.time.LocalTime
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -57,9 +56,11 @@ data class ReviewUiState(
 
 @HiltViewModel
 class ReviewViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     savedState: SavedStateHandle,
     private val recognizer: FoodRecognizer,
+    private val photoAnalysis: PhotoAnalysisScheduler,
+    @ApplicationScope private val appScope: CoroutineScope,
+    @Dispatcher(LoopDispatcher.IO) private val io: CoroutineDispatcher,
     private val foods: FoodRepository,
     private val meals: MealRepository,
     private val aggregateToday: AggregateTodayUseCase,
@@ -191,16 +192,16 @@ class ReviewViewModel @Inject constructor(
     fun analyseLater() = viewModelScope.launch {
         val path = _state.value.photoPath ?: return@launch
         if (route.pendingId < 0) meals.queuePhoto(path, clock.millis())
-        enqueueAnalysis(context)
+        photoAnalysis.enqueue()
         _state.update { it.copy(queued = true) }
     }
 
-    companion object {
-        fun enqueueAnalysis(context: Context) {
-            val request = OneTimeWorkRequestBuilder<AnalysePhotosWorker>()
-                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                .build()
-            WorkManager.getInstance(context).enqueueUniqueWork(AnalysePhotosWorker.NAME, ExistingWorkPolicy.KEEP, request)
+    /** A photo taken for this review and then neither logged nor queued isn't kept. */
+    override fun onCleared() {
+        val s = _state.value
+        val path = route.photoPath
+        if (path != null && route.pendingId < 0 && !s.saved && !s.queued) {
+            appScope.launch(io) { PhotoStore.delete(path) }
         }
     }
 }

@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.loop.core.domain.repository.PinRepository
 import app.loop.core.domain.repository.SettingsRepository
-import app.loop.core.domain.usecase.PinAttemptTracker
+import app.loop.core.domain.usecase.PinAttempts
+import app.loop.core.domain.usecase.PinLockout
 import app.loop.core.domain.usecase.PinRules
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Clock
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +28,7 @@ data class LockUiState(
     val biometricEnabled: Boolean = false,
 )
 
+/** Activity-scoped (the lock sits outside navigation), so [onShown] reloads everything each time. */
 @HiltViewModel
 class LockViewModel @Inject constructor(
     private val pins: PinRepository,
@@ -33,16 +36,18 @@ class LockViewModel @Inject constructor(
     private val lockManager: AppLockManager,
     private val clock: Clock,
 ) : ViewModel() {
-    private val attempts = PinAttemptTracker()
-
     private val _state = MutableStateFlow(LockUiState())
     val state: StateFlow<LockUiState> = _state.asStateFlow()
 
-    init {
+    private var cooldown: Job? = null
+
+    fun onShown() {
         viewModelScope.launch {
             val length = pins.pinLength() ?: PinRules.MIN_LENGTH
             val biometric = settings.settings.first().biometricUnlockEnabled
-            _state.update { it.copy(pinLength = length, biometricEnabled = biometric) }
+            _state.update { it.copy(entered = "", checking = false, pinLength = length, biometricEnabled = biometric) }
+            // A cool-down survives closing the app, so pick it up where it left off.
+            runCooldown(pins.attempts())
         }
     }
 
@@ -57,29 +62,44 @@ class LockViewModel @Inject constructor(
     fun onBackspace() = _state.update { it.copy(entered = it.entered.dropLast(1)) }
 
     fun onBiometricSuccess() {
-        attempts.onSuccess()
-        lockManager.unlock()
-    }
-
-    private fun check(pin: String) = viewModelScope.launch {
-        _state.update { it.copy(checking = true) }
-        if (pins.verifyPin(pin)) {
-            attempts.onSuccess()
+        viewModelScope.launch {
+            pins.saveAttempts(PinAttempts())
             lockManager.unlock()
-            _state.update { it.copy(checking = false, entered = "") }
-        } else {
-            attempts.onFailure(clock.millis())
-            _state.update { it.copy(checking = false, entered = "", errorTick = it.errorTick + 1) }
-            runCooldown()
         }
     }
 
-    private suspend fun runCooldown() {
-        while (true) {
-            val left = attempts.remainingCooldownMillis(clock.millis())
-            _state.update { it.copy(cooldownSeconds = ((left + 999) / 1000).toInt()) }
-            if (left <= 0) break
-            delay(250)
+    fun onCancel() = lockManager.cancelConfirm()
+
+    private fun check(pin: String) = viewModelScope.launch {
+        _state.update { it.copy(checking = true) }
+        val attempts = pins.attempts()
+        // Checked here as well as in the UI, so a restart mid-cool-down can't skip it.
+        if (PinLockout.remainingMillis(attempts, clock.millis()) > 0) {
+            _state.update { it.copy(checking = false, entered = "") }
+            runCooldown(attempts)
+            return@launch
+        }
+        if (pins.verifyPin(pin)) {
+            pins.saveAttempts(PinAttempts())
+            _state.update { it.copy(checking = false, entered = "") }
+            lockManager.unlock()
+        } else {
+            val next = PinLockout.afterFailure(attempts, clock.millis())
+            pins.saveAttempts(next)
+            _state.update { it.copy(checking = false, entered = "", errorTick = it.errorTick + 1) }
+            runCooldown(next)
+        }
+    }
+
+    private fun runCooldown(attempts: PinAttempts) {
+        cooldown?.cancel()
+        cooldown = viewModelScope.launch {
+            while (true) {
+                val left = PinLockout.remainingMillis(attempts, clock.millis())
+                _state.update { it.copy(cooldownSeconds = ((left + 999) / 1000).toInt()) }
+                if (left <= 0) break
+                delay(250)
+            }
         }
     }
 }

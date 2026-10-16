@@ -15,6 +15,7 @@ import app.loop.core.domain.repository.HeartRateReader
 import app.loop.core.domain.repository.SettingsRepository
 import app.loop.core.domain.repository.SleepRepository
 import app.loop.core.domain.repository.WorkoutRepository
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.domain.tracker.TrackerSource
 import app.loop.core.model.DailySummaryPatch
 import app.loop.core.model.DayClock
@@ -71,7 +72,7 @@ class HealthConnectSource @Inject constructor(
         val range = TimeRangeFilter.between(now.minusMillis(TimeUnit.DAYS.toMillis(2)), now)
         val zone = clock.zone.id
 
-        runCatching {
+        runSuspendCatching {
             val known = workouts.between(range.startTime!!.toEpochMilli(), now.toEpochMilli() + 1)
                 .filter { it.source == WorkoutSource.WATCH }.map { it.start }.toSet()
             client.readRecords(ReadRecordsRequest(ExerciseSessionRecord::class, range)).records
@@ -89,7 +90,7 @@ class HealthConnectSource @Inject constructor(
                     )
                 }
         }
-        runCatching {
+        runSuspendCatching {
             val known = sleep.overlapping(range.startTime!!.toEpochMilli(), now.toEpochMilli() + 1)
                 .filter { it.source == SleepSource.WATCH }.map { it.start }.toSet()
             client.readRecords(ReadRecordsRequest(SleepSessionRecord::class, range)).records
@@ -111,7 +112,7 @@ class HealthConnectSource @Inject constructor(
     override suspend fun summarize(day: LocalDate, zone: ZoneId): DailySummaryPatch {
         val client = client() ?: return DailySummaryPatch(day)
         val window = DayClock.window(day, zone, settings.settings.first().dayBoundary)
-        val steps = runCatching {
+        val steps = runSuspendCatching {
             client.aggregate(
                 AggregateRequest(
                     setOf(StepsRecord.COUNT_TOTAL),
@@ -127,10 +128,10 @@ class HealthConnectSource @Inject constructor(
         val zone = clock.zone
         val from = date.atStartOfDay(zone).toInstant()
         val to = minOf(date.plusDays(1).atStartOfDay(zone).toInstant(), Instant.ofEpochMilli(clock.millis()))
-        return runCatching {
+        return runSuspendCatching {
             val result = client.aggregate(AggregateRequest(setOf(HeartRateRecord.BPM_MIN, HeartRateRecord.BPM_MAX), TimeRangeFilter.between(from, to)))
-            val min = result[HeartRateRecord.BPM_MIN] ?: return@runCatching null
-            val max = result[HeartRateRecord.BPM_MAX] ?: return@runCatching null
+            val min = result[HeartRateRecord.BPM_MIN] ?: return@runSuspendCatching null
+            val max = result[HeartRateRecord.BPM_MAX] ?: return@runSuspendCatching null
             min.toInt()..max.toInt()
         }.getOrNull()
     }

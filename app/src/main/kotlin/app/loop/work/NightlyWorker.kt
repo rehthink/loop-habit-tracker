@@ -7,7 +7,9 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import app.loop.core.domain.repository.MaintenanceRepository
 import app.loop.core.domain.repository.SettingsRepository
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.domain.usecase.AggregateDayUseCase
 import app.loop.core.domain.usecase.DetectDayBoundaryUseCase
 import app.loop.core.model.DayClock
@@ -21,8 +23,9 @@ import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.first
 
 /**
- * Nightly summary job: updates the detected day boundary (from recent wake times), then finalises
- * the last three days' summaries (late data such as watch sleep or a sleep correction is picked up).
+ * Nightly summary job: updates the detected day boundary (from recent wake times), finalises the
+ * last three days' summaries (late data such as watch sleep or a sleep correction is picked up),
+ * and folds the database's write-ahead log into loop.db so the night's backup is current.
  */
 @HiltWorker
 class NightlyWorker @AssistedInject constructor(
@@ -30,15 +33,18 @@ class NightlyWorker @AssistedInject constructor(
     @Assisted params: WorkerParameters,
     private val aggregate: AggregateDayUseCase,
     private val detectBoundary: DetectDayBoundaryUseCase,
+    private val maintenance: MaintenanceRepository,
     private val settings: SettingsRepository,
     private val clock: Clock,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
         if (!settings.settings.first().onboardingComplete) return Result.success()
-        val boundary = runCatching { detectBoundary() }.getOrElse { settings.settings.first().dayBoundary }
+        val boundary = runSuspendCatching { detectBoundary() }.getOrElse { settings.settings.first().dayBoundary }
         val today = DayClock.today(clock.millis(), clock.zone, boundary)
-        (1L..3L).forEach { back -> runCatching { aggregate(today.minusDays(back)) } }
+        (1L..3L).forEach { back -> runSuspendCatching { aggregate(today.minusDays(back)) } }
+        // Auto Backup usually runs overnight and copies loop.db alone.
+        runSuspendCatching { maintenance.checkpointDatabase() }
         return Result.success()
     }
 

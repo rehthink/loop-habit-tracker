@@ -181,7 +181,7 @@ private fun StatusCard(state: CycleUiState, accent: Color, onStarted: () -> Unit
             CardTitle(stringResource(R.string.cy_start_title), icon = LoopIcons.Heart, tint = accent)
             Text(stringResource(R.string.cy_start_body), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             PrimaryButton(stringResource(R.string.cy_started_today), onClick = onStarted, modifier = Modifier.padding(top = 16.dp))
-            QuietButton(stringResource(R.string.cy_log_earlier), onClick = onLogEarlier)
+            QuietButton(stringResource(R.string.cy_log_earlier), onClick = onLogEarlier, modifier = Modifier.align(Alignment.CenterHorizontally))
             return@LoopCard
         }
         val headline = when {

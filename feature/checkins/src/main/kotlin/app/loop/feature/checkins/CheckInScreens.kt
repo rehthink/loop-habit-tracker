@@ -11,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +47,7 @@ import app.loop.core.designsystem.component.DetailScreen
 import app.loop.core.designsystem.component.LoopCard
 import app.loop.core.designsystem.component.PrimaryButton
 import app.loop.core.designsystem.component.QuietButton
+import app.loop.core.designsystem.component.ScaleSelector
 import app.loop.core.designsystem.component.SecondaryButton
 import app.loop.core.designsystem.component.Stepper
 import app.loop.core.designsystem.icon.LoopIcons
@@ -88,13 +88,16 @@ private fun MoodSlot.label() = when (this) {
     MoodSlot.NIGHT -> R.string.slot_night
 }
 
+/** 1 to 5, from "Very low" to "Great", in one row. */
 @Composable
 private fun ScalePicker(selected: Int?, onSelect: (Int) -> Unit) {
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        (1..5).forEach { v ->
-            FilterChip(selected = selected == v, onClick = { onSelect(v) }, label = { Text(stringResource(moodLabel(v))) })
-        }
-    }
+    ScaleSelector(
+        labels = (1..5).map { stringResource(moodLabel(it)) },
+        selected = selected?.minus(1),
+        onSelect = { onSelect(it + 1) },
+        color = LoopTheme.areas.sleep,
+        modifier = Modifier.padding(top = 4.dp),
+    )
 }
 
 @Composable
@@ -103,6 +106,7 @@ internal fun CheckInScreen(onBack: () -> Unit, viewModel: CheckInViewModel = hil
     var mood by rememberSaveable { mutableStateOf<Int?>(null) }
     var energy by rememberSaveable { mutableStateOf<Int?>(null) }
     var note by rememberSaveable { mutableStateOf("") }
+    var moodMissing by rememberSaveable { mutableStateOf(false) }
     var line by rememberSaveable(state.journal) { mutableStateOf(state.journal.orEmpty()) }
     LaunchedEffect(state.justSaved) {
         if (state.justSaved) {
@@ -116,7 +120,18 @@ internal fun CheckInScreen(onBack: () -> Unit, viewModel: CheckInViewModel = hil
     DetailScreen(stringResource(R.string.ci_title), onBack) {
         LoopCard(Modifier.fillMaxWidth()) {
             CardTitle(stringResource(R.string.ci_mood_q), icon = LoopIcons.Mood, tint = LoopTheme.areas.sleep)
-            ScalePicker(mood) { mood = it }
+            ScalePicker(mood) {
+                mood = it
+                moodMissing = false
+            }
+            if (moodMissing) {
+                Text(
+                    stringResource(R.string.ci_mood_missing),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 6.dp),
+                )
+            }
             Text(stringResource(R.string.ci_energy_q), style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
             ScalePicker(energy) { energy = it }
             OutlinedTextField(
@@ -126,7 +141,12 @@ internal fun CheckInScreen(onBack: () -> Unit, viewModel: CheckInViewModel = hil
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
             )
-            PrimaryButton(stringResource(R.string.ci_save), enabled = mood != null, onClick = { viewModel.save(mood!!, energy, note) }, modifier = Modifier.padding(top = 16.dp))
+            // Always tappable: with no mood picked yet, it says what's missing instead of doing nothing.
+            PrimaryButton(
+                stringResource(R.string.ci_save),
+                onClick = { mood?.let { viewModel.save(it, energy, note) } ?: run { moodMissing = true } },
+                modifier = Modifier.padding(top = 16.dp),
+            )
             if (state.justSaved) Text(stringResource(R.string.ci_saved), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 8.dp))
         }
 
@@ -156,6 +176,7 @@ internal fun CheckInScreen(onBack: () -> Unit, viewModel: CheckInViewModel = hil
             QuietButton(
                 if (state.journal != null && state.journal == line.trim()) stringResource(R.string.ci_journal_saved) else stringResource(R.string.ci_journal_save),
                 onClick = { viewModel.saveJournal(line) },
+                alignToText = true,
             )
             if (state.recentLines.size > 1) {
                 Text(stringResource(R.string.ci_journal_recent), style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(top = 8.dp))
@@ -202,7 +223,7 @@ internal fun HealthLogScreen(onBack: () -> Unit, onOpenPermission: (LoopPermissi
                     if (issue.end == null) TextButton(onClick = { viewModel.endIssue(issue) }) { Text(stringResource(R.string.hl_better)) }
                 }
             }
-            QuietButton(stringResource(R.string.hl_add_issue), onClick = { addingIssue = true })
+            QuietButton(stringResource(R.string.hl_add_issue), onClick = { addingIssue = true }, alignToText = true)
         }
 
         LoopCard(Modifier.fillMaxWidth()) {
@@ -228,7 +249,7 @@ internal fun HealthLogScreen(onBack: () -> Unit, onOpenPermission: (LoopPermissi
                     IconButton(onClick = { viewModel.deleteMedicine(med) }) { Icon(LoopIcons.Delete, contentDescription = stringResource(R.string.hl_med_delete, med.name)) }
                 }
             }
-            QuietButton(stringResource(R.string.hl_add_medicine), onClick = { addingMedicine = true })
+            QuietButton(stringResource(R.string.hl_add_medicine), onClick = { addingMedicine = true }, alignToText = true)
         }
         if (state.medicines.isNotEmpty() && !state.canNotify) {
             PermissionGateCard(LoopPermission.POST_NOTIFICATIONS, stringResource(R.string.hl_gate_notify), onOpenPermission)

@@ -103,10 +103,10 @@ abstract class LoopDatabase : RoomDatabase() {
     abstract fun cycleDayDao(): CycleDayDao
 
     companion object {
-        const val VERSION = 3
+        const val VERSION = 4
         const val NAME = "loop.db"
 
         /** Add each Migration here as the schema grows. */
-        val MIGRATIONS = arrayOf(Migrations.MIGRATION_1_2, Migrations.MIGRATION_2_3)
+        val MIGRATIONS = arrayOf(Migrations.MIGRATION_1_2, Migrations.MIGRATION_2_3, Migrations.MIGRATION_3_4)
     }
 }

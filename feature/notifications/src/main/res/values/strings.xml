@@ -6,9 +6,9 @@
     <string name="ns_quiet_value">%1$s to %2$s. Nothing makes a sound; nudges wait until morning.</string>
     <string name="ns_quiet_start">Quiet from</string>
     <string name="ns_quiet_end">Quiet until</string>
-    <string name="ns_cap">Daily limit for nudges and summaries</string>
+    <string name="ns_cap">Nudges per day</string>
     <string name="ns_cap_value">%1$d a day</string>
-    <string name="ns_cap_hint">Check-ins and confirmations you asked for don\'t count.</string>
+    <string name="ns_cap_hint">Check-ins and confirmations don\'t count.</string>
     <string name="ns_section_alert">Check-ins and confirmations</string>
     <string name="ns_section_aware">Gentle nudges</string>
     <string name="ns_section_relax">Summaries</string>
@@ -17,7 +17,7 @@
     <string name="ns_change_time">Change time for %1$s</string>
     <string name="ns_save">Save</string>
     <string name="ns_cancel">Cancel</string>
-    <string name="ns_next">Next</string>
+    <string name="ns_next">Set end time</string>
     <string name="ns_reset">Reset to default</string>
     <string name="ns_medicine_times">At each medicine\'s times</string>
     <string name="ns_sundays">Sundays at %1$s</string>

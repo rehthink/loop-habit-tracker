@@ -48,6 +48,9 @@ class ScreenTimeSource @Inject constructor(
     override val id = TrackerId.SCREEN_TIME
     override val requiredPermissions = setOf(LoopPermission.USAGE_ACCESS)
 
+    /** A local query from a saved cursor: cheap enough for every unlock and app open (the spec's "on unlock"). */
+    override val quick = true
+
     // Usage access is an app-op, not a runtime permission: RefreshUseCase only calls this once it's granted.
     @SuppressLint("MissingPermission")
     override suspend fun collect() = withContext(io) {
@@ -96,6 +99,10 @@ class ScreenTimeSource @Inject constructor(
 
     override suspend fun day(date: LocalDate): ScreenTimeDay? = day(date, clock.zone)
 
+    /**
+     * Screen time counts midnight to midnight, not by the day boundary the other trackers use:
+     * people compare it with Digital Wellbeing, which does the same (the screen says so too).
+     */
     private suspend fun day(date: LocalDate, zone: ZoneId): ScreenTimeDay? {
         val prefs = settings.settings.first()
         val from = date.atStartOfDay(zone).toInstant().toEpochMilli()

@@ -140,11 +140,15 @@ internal fun ProgressScreen(contentPadding: PaddingValues, viewModel: ProgressVi
                     )
                     Text(
                         stringResource(R.string.pg_xp, level.xp, level.xpForNext - level.xpIntoLevel),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(top = 12.dp),
+                    )
+                    Text(
+                        stringResource(R.string.pg_xp_desc),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 8.dp),
+                        modifier = Modifier.padding(top = 2.dp),
                     )
-                    Text(stringResource(R.string.pg_xp_desc), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             if (state.hasData) {
@@ -160,10 +164,10 @@ internal fun ProgressScreen(contentPadding: PaddingValues, viewModel: ProgressVi
                         state.bests.forEach { b ->
                             Row(Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
                                 Column(Modifier.weight(1f)) {
-                                    Text(b.title, style = MaterialTheme.typography.titleSmall)
+                                    Text(b.title, style = MaterialTheme.typography.bodyLarge)
                                     Text(b.date.format(date), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
-                                Text(b.value, style = MaterialTheme.typography.bodyLarge)
+                                Text(b.value, style = MaterialTheme.typography.titleSmall)
                             }
                         }
                     }
@@ -290,7 +294,7 @@ private fun InsightsCard(state: ProgressUiState) {
             Text(insight.text, style = MaterialTheme.typography.bodyLarge)
         }
         if (state.insights.size > 3) {
-            QuietButton(stringResource(if (expanded) R.string.pg_less else R.string.pg_more), onClick = { expanded = !expanded })
+            QuietButton(stringResource(if (expanded) R.string.pg_less else R.string.pg_more), onClick = { expanded = !expanded }, alignToText = true)
         }
     }
 }
@@ -302,7 +306,7 @@ private fun StreaksCard(streaks: List<Streak>) {
         streaks.forEach { s ->
             Row(Modifier.fillMaxWidth().padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text(s.habit.title, style = MaterialTheme.typography.titleSmall)
+                    Text(s.habit.title, style = MaterialTheme.typography.bodyLarge)
                     val notes = listOfNotNull(
                         stringResource(R.string.pg_streak_today).takeIf { s.doneToday },
                         stringResource(R.string.pg_streak_freeze).takeIf { s.freezeUsedThisWeek },
@@ -311,7 +315,12 @@ private fun StreaksCard(streaks: List<Streak>) {
                         Text(notes.joinToString(" · "), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-                Text(stringResource(R.string.pg_streak_days, s.days), style = MaterialTheme.typography.titleMedium)
+                // No streak yet reads as a quiet "not started", never a row of bold zeros.
+                if (s.days > 0) {
+                    Text(pluralStringResource(R.plurals.pg_streak_days, s.days, s.days), style = MaterialTheme.typography.titleSmall)
+                } else {
+                    Text(stringResource(R.string.pg_streak_none), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
             }
         }
     }

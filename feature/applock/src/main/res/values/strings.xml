@@ -3,13 +3,22 @@
     <string name="lock_title">Loop is locked</string>
     <string name="lock_enter_pin">Enter your PIN</string>
     <string name="lock_cooldown">Too many tries. Try again in %1$d s</string>
+    <string name="lock_cooldown_minutes">Too many tries. Try again in %1$d min</string>
     <string name="lock_biometric_title">Unlock Loop</string>
     <string name="lock_use_pin">Use PIN</string>
+    <string name="lock_confirm_title">Confirm it\'s you</string>
+    <string name="lock_confirm_detail">Enter your PIN to carry on</string>
+    <string name="lock_cancel">Cancel</string>
+
+    <string name="lock_reset_title">App lock is off</string>
+    <string name="lock_reset_body">Your PIN stays on the phone you made it on, so it didn\'t come across with your data. Set a new one whenever you like.</string>
+    <string name="lock_reset_set">Set a new PIN</string>
+    <string name="lock_reset_later">Not now</string>
 
     <string name="pin_setup_title">App lock</string>
     <string name="pin_setup_choose">Choose a PIN</string>
     <string name="pin_setup_confirm">Type it once more</string>
     <string name="pin_setup_hint">%1$d to %2$d digits. You\'ll use it to open Loop.</string>
     <string name="pin_setup_mismatch">Those didn\'t match. Let\'s try again.</string>
-    <string name="pin_setup_next">Next</string>
+    <string name="pin_setup_next">Use this PIN</string>
 </resources>

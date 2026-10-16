@@ -25,7 +25,7 @@ object Activities {
     }
 }
 
-/** Pure helpers over ACTIVITY raw events (value = activity type, packageName = ENTER/EXIT). */
+/** Pure helpers over ACTIVITY raw events (value = activity type, tag = ENTER/EXIT). */
 object ActivityMath {
     /** Closed intervals of [activity], clipped to [from, to); an interval still open ends at [now]. */
     fun intervals(events: List<RawEvent>, activity: Int, from: Long, to: Long, now: Long): List<LongRange> {
@@ -33,7 +33,7 @@ object ActivityMath {
         var start: Long? = null
         for (e in events.sortedBy { it.startTime }) {
             if (e.value?.toInt() != activity) continue
-            when (e.packageName) {
+            when (e.tag) {
                 Activities.ENTER -> if (start == null) start = e.startTime
                 Activities.EXIT -> start?.let { s -> clip(s, e.startTime, from, to)?.let(out::add) }.also { start = null }
             }

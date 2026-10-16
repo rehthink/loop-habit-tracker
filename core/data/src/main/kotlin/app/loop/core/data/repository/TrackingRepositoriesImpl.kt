@@ -86,6 +86,7 @@ internal class SleepRepositoryImpl @Inject constructor(private val dao: SleepSes
     override suspend fun insert(session: SleepSession) = dao.insert(session.toEntity())
     override suspend fun update(session: SleepSession) = dao.update(session.toEntity())
     override suspend fun delete(id: Long) = dao.delete(id)
+    override suspend fun byId(id: Long) = dao.byId(id)?.toModel()
     override suspend fun overlapping(from: Long, to: Long) = dao.overlapping(from, to).map { it.toModel() }
     override fun observeOverlapping(from: Long, to: Long) = dao.observeOverlapping(from, to).map { l -> l.map { it.toModel() } }
 }

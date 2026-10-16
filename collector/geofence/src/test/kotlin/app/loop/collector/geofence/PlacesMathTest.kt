@@ -9,7 +9,7 @@ import org.junit.Test
 
 class PlacesMathTest {
     private fun ev(type: RawEventType, kind: PlaceKind, min: Long) =
-        RawEvent(type = type, packageName = kind.name, startTime = min * 60_000, zoneId = "UTC")
+        RawEvent(type = type, tag = kind.name, startTime = min * 60_000, zoneId = "UTC")
 
     @Test
     fun `commute is home to office plus office to home`() {
@@ -32,5 +32,25 @@ class PlacesMathTest {
         val enter = ev(RawEventType.GEOFENCE_ENTER, PlaceKind.GYM, 100)
         assertEquals(100 * 60_000L until 160 * 60_000L, PlacesMath.gymVisit(listOf(enter), ev(RawEventType.GEOFENCE_EXIT, PlaceKind.GYM, 160)))
         assertNull(PlacesMath.gymVisit(listOf(enter), ev(RawEventType.GEOFENCE_EXIT, PlaceKind.GYM, 110)))
+    }
+
+    @Test
+    fun `a repeated arrival mid-visit doesn't restart the visit`() {
+        val events = listOf(
+            ev(RawEventType.GEOFENCE_ENTER, PlaceKind.GYM, 100),
+            ev(RawEventType.GEOFENCE_ENTER, PlaceKind.GYM, 150), // fences re-added while inside
+        )
+        assertEquals(100 * 60_000L until 160 * 60_000L, PlacesMath.gymVisit(events, ev(RawEventType.GEOFENCE_EXIT, PlaceKind.GYM, 160)))
+    }
+
+    @Test
+    fun `an earlier visit doesn't stretch the next one`() {
+        val events = listOf(
+            ev(RawEventType.GEOFENCE_ENTER, PlaceKind.GYM, 100),
+            ev(RawEventType.GEOFENCE_EXIT, PlaceKind.GYM, 110),
+            ev(RawEventType.GEOFENCE_ENTER, PlaceKind.GYM, 200),
+        )
+        assertEquals(200 * 60_000L until 230 * 60_000L, PlacesMath.gymVisit(events, ev(RawEventType.GEOFENCE_EXIT, PlaceKind.GYM, 230)))
+        assertNull(PlacesMath.gymVisit(events.take(2), ev(RawEventType.GEOFENCE_EXIT, PlaceKind.GYM, 130)))
     }
 }

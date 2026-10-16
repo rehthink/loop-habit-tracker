@@ -4,7 +4,13 @@ package app.loop.core.model
 object SystemComponents {
     const val NOTIFICATION_LISTENER = "app.loop.collector.notifications.LoopNotificationListener"
 
-    /** Intent extra on the app's launch intent: where to go (see [Routes]). */
+    /**
+     * The non-exported alias of MainActivity that notifications and the widget open. Routes are
+     * only followed when they arrive through it, so other apps can't steer Loop.
+     */
+    const val DEEP_LINK_ACTIVITY = "app.loop.DeepLink"
+
+    /** Intent extra on a deep-link intent: where to go (see [Routes]). */
     const val EXTRA_ROUTE = "loop.route"
 
     /** Intent extra: the notification the user tapped, so its ignored streak resets. */
@@ -25,4 +31,5 @@ object Routes {
     const val REPORT = "progress/report"
     const val NOTIFICATION_SETTINGS = "settings/notifications"
     const val CYCLE = "cycle"
+    const val APP_LOCK = "settings/app-lock"
 }

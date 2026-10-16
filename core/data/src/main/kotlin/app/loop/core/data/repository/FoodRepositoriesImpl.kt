@@ -50,10 +50,18 @@ internal class FoodRepositoryImpl @Inject constructor(
     }
 }
 
-internal class MealRepositoryImpl @Inject constructor(private val dao: MealDao) : MealRepository {
+internal class MealRepositoryImpl @Inject constructor(
+    private val dao: MealDao,
+    private val photos: MealPhotoFiles,
+) : MealRepository {
     override suspend fun log(meal: Meal): Long = dao.insertMealWithItems(meal.toEntity(), meal.items.map { it.toEntity(0) })
 
-    override suspend fun delete(mealId: Long) = dao.deleteMeal(mealId)
+    /** Deleting a meal deletes its photo too. */
+    override suspend fun delete(mealId: Long) {
+        val photo = dao.photoOf(mealId)
+        dao.deleteMeal(mealId)
+        photos.delete(photo)
+    }
 
     override suspend fun mealsBetween(from: Long, to: Long): List<Meal> = withItems(dao.mealsBetween(from, to))
 

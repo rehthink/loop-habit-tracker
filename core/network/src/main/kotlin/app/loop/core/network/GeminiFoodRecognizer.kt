@@ -9,6 +9,7 @@ import app.loop.core.model.RecognizedItem
 import java.io.IOException
 import java.util.Base64
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -51,17 +52,26 @@ internal class GeminiFoodRecognizer @Inject constructor(
                 ?: return@withContext FoodRecognizer.Result.Success(emptyList())
             FoodRecognizer.Result.Success(parse(text))
         } catch (e: HttpException) {
-            when (e.code()) {
-                429 -> FoodRecognizer.Result.RateLimited
-                400, 401, 403 -> FoodRecognizer.Result.Failed("key")
+            when {
+                e.code() == 429 -> FoodRecognizer.Result.RateLimited
+                e.code() == 401 || e.code() == 403 || isBadKey(e) -> FoodRecognizer.Result.Failed("key")
                 else -> FoodRecognizer.Result.Failed("http ${e.code()}")
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: IOException) {
             FoodRecognizer.Result.Offline
         } catch (e: Exception) {
             FoodRecognizer.Result.Failed(e::class.simpleName ?: "error")
         }
     }
+
+    /**
+     * Google answers a wrong key with 400 and reason API_KEY_INVALID. Other 400s (an image or
+     * request it won't take) aren't the key's fault. The body is only searched, never logged.
+     */
+    private fun isBadKey(e: HttpException): Boolean =
+        e.code() == 400 && runCatching { e.response()?.errorBody()?.string() }.getOrNull()?.contains("API_KEY_INVALID") == true
 
     internal fun parse(text: String): List<RecognizedItem> =
         json.decodeFromString(MealItems.serializer(), text).items

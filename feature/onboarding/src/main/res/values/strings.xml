@@ -12,7 +12,7 @@
     <string name="onb_privacy_gemini_title">Meal photos (optional)</string>
     <string name="onb_privacy_gemini_body">If you add your own free Gemini key, meal photos are sent to Google to recognise the food. On the free tier, Google may use these photos to improve its products. You can skip this and log food by hand.</string>
     <string name="onb_privacy_backup">Backups go to your own Google Drive through Android, or to a file you export yourself.</string>
-    <string name="onb_privacy_cta">Sounds good</string>
+    <string name="onb_privacy_cta">Continue</string>
 
     <string name="onb_permissions_title">What Loop can notice</string>
     <string name="onb_permissions_more">Show why</string>

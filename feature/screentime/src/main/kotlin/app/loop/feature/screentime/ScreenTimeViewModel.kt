@@ -6,6 +6,7 @@ import app.loop.core.domain.repository.AppLabelProvider
 import app.loop.core.domain.repository.MusicReader
 import app.loop.core.domain.repository.PermissionRepository
 import app.loop.core.domain.repository.ScreenTimeReader
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.domain.usecase.RefreshUseCase
 import app.loop.core.model.LoopPermission
 import app.loop.core.model.ScreenTimeDay
@@ -49,7 +50,7 @@ class ScreenTimeViewModel @Inject constructor(
 
     fun onResume() = viewModelScope.launch {
         load(_state.value.date)
-        runCatching { refresh() }
+        runSuspendCatching { refresh(RefreshUseCase.Mode.QUICK) }
         load(_state.value.date)
     }
 

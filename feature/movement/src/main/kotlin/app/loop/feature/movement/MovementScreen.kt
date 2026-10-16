@@ -118,7 +118,7 @@ internal fun MovementScreen(
                 if (i > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 WorkoutRow(w, zone, onConfirm = { viewModel.confirm(w) }, onDelete = { viewModel.delete(w) })
             }
-            QuietButton(stringResource(R.string.mv_add_workout), onClick = { adding = true })
+            QuietButton(stringResource(R.string.mv_add_workout), onClick = { adding = true }, alignToText = true)
         }
 
         PlacesCard(state, zone, onOpenPermission, viewModel::savePlaceHere, viewModel::removePlace)

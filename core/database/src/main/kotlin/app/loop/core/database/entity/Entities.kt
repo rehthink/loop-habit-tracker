@@ -57,6 +57,7 @@ data class RawEventEntity(
     val startTime: Long,
     val endTime: Long?,
     val zoneId: String,
+    val tag: String? = null,
 )
 
 @Serializable

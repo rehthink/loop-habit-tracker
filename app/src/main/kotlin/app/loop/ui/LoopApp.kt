@@ -34,6 +34,7 @@ import app.loop.core.designsystem.icon.LoopIcons
 import app.loop.core.model.Area
 import app.loop.core.model.LoopPermission
 import app.loop.core.model.Routes
+import app.loop.feature.applock.PinSetupRoute
 import app.loop.feature.applock.navigateToPinSetup
 import app.loop.feature.applock.pinSetupScreen
 import app.loop.feature.checkins.CheckInRoute
@@ -223,6 +224,7 @@ private fun NavHostController.openRoute(route: String) {
         route == Routes.REPORT -> ProgressRoute
         route == Routes.NOTIFICATION_SETTINGS -> NotificationSettingsRoute
         route == Routes.CYCLE -> CycleRoute
+        route == Routes.APP_LOCK -> PinSetupRoute
         else -> return
     }
     if (destination == TodayRoute || destination == ProgressRoute) {

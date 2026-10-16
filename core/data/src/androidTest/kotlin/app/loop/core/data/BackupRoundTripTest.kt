@@ -13,6 +13,8 @@ import app.loop.core.database.entity.MealEntity
 import app.loop.core.database.entity.MealItemEntity
 import app.loop.core.database.entity.MoodCheckInEntity
 import app.loop.core.database.entity.ProfileEntity
+import app.loop.core.data.repository.MealPhotoFiles
+import app.loop.core.datastore.CollectorStateDataSource
 import app.loop.core.datastore.SecureStore
 import app.loop.core.datastore.UserPreferencesDataSource
 import app.loop.core.model.Flow
@@ -51,7 +53,9 @@ class BackupRoundTripTest {
         db = Room.inMemoryDatabaseBuilder(context, LoopDatabase::class.java).build()
         val file = File(context.cacheDir, "backup-test-${System.nanoTime()}.preferences_pb")
         prefs = UserPreferencesDataSource(PreferenceDataStoreFactory.create(scope = scope) { file })
-        backup = BackupRepositoryImpl(context, db, prefs, SecureStore(context, Dispatchers.IO), Clock.systemDefaultZone(), Dispatchers.IO)
+        val stateFile = File(context.cacheDir, "state-test-${System.nanoTime()}.preferences_pb")
+        val state = CollectorStateDataSource(PreferenceDataStoreFactory.create(scope = scope) { stateFile })
+        backup = BackupRepositoryImpl(context, db, prefs, state, SecureStore(context, Dispatchers.IO), MealPhotoFiles(context), Clock.systemDefaultZone(), Dispatchers.IO)
     }
 
     @After
@@ -72,12 +76,12 @@ class BackupRoundTripTest {
         prefs.setCycleTracking(true)
         prefs.setOnboardingComplete(true)
 
-        val json = backup.exportJson()
+        val json = java.io.ByteArrayOutputStream().also { backup.exportTo(it) }.toString(Charsets.UTF_8.name())
         assertTrue(json.contains("\"format\":\"loop-export\""))
 
         db.clearAllTables()
         prefs.clear()
-        val result = backup.importJson(json)
+        val result = backup.importFrom(json.byteInputStream())
 
         assertEquals(1, result.days)
         assertEquals(1, result.meals)
@@ -92,15 +96,15 @@ class BackupRoundTripTest {
         assertEquals(Flow.MEDIUM, db.cycleDayDao().get(day)?.flow)
         assertEquals("CRAMPS,FATIGUE", db.cycleDayDao().get(day)?.symptoms)
         // Importing the same file twice gives the same result, not duplicates.
-        backup.importJson(json)
+        backup.importFrom(json.byteInputStream())
         assertEquals(1, db.mealDao().allMeals().size)
     }
 
     @Test
     fun rejectsFilesThatAreNotLoopExports() = runTest {
-        val error = runCatching { backup.importJson("{\"hello\":1}") }.exceptionOrNull()
+        val error = runCatching { backup.importFrom("{\"hello\":1}".byteInputStream()) }.exceptionOrNull()
         assertTrue(error is IllegalArgumentException)
-        val newer = runCatching { backup.importJson("{\"format\":\"loop-export\",\"version\":99,\"exportedAt\":0,\"settings\":{\"themeMode\":\"SYSTEM\",\"disabledTrackers\":[],\"dayBoundary\":\"04:00\",\"quietStart\":\"22:30\",\"quietEnd\":\"07:00\",\"dailyAlertCap\":4,\"workStart\":\"09:00\",\"workEnd\":\"18:00\",\"notificationTimes\":{},\"onboardingComplete\":true}}") }.exceptionOrNull()
+        val newer = runCatching { backup.importFrom(("{\"format\":\"loop-export\",\"version\":99,\"exportedAt\":0,\"settings\":{\"themeMode\":\"SYSTEM\",\"disabledTrackers\":[],\"dayBoundary\":\"04:00\",\"quietStart\":\"22:30\",\"quietEnd\":\"07:00\",\"dailyAlertCap\":4,\"workStart\":\"09:00\",\"workEnd\":\"18:00\",\"notificationTimes\":{},\"onboardingComplete\":true}}").byteInputStream()) }.exceptionOrNull()
         assertTrue(newer is IllegalArgumentException)
     }
 

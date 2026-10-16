@@ -8,12 +8,14 @@ import java.time.LocalTime
 data class RawEvent(
     val id: Long = 0,
     val type: RawEventType,
-    /** App package for app/notification/music events; transition ("ENTER"/"EXIT") for activity events; place kind for geofences. */
+    /** App package, for app, notification and music events only. */
     val packageName: String? = null,
     val value: Double? = null,
     val startTime: Long,
     val endTime: Long? = null,
     val zoneId: String,
+    /** What else the event needs: the transition ("ENTER"/"EXIT") for activity events, the place kind for geofences. */
+    val tag: String? = null,
 )
 
 data class SleepSession(

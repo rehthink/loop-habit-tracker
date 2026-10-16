@@ -12,6 +12,7 @@ import app.loop.core.domain.repository.PlacesRepository
 import app.loop.core.domain.repository.SettingsRepository
 import app.loop.core.domain.repository.SleepRepository
 import app.loop.core.domain.repository.WorkoutRepository
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.domain.usecase.AggregateDayUseCase
 import app.loop.core.model.DayClock
 import app.loop.core.model.MoodCheckIn
@@ -89,7 +90,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 val kg = raw?.replace(',', '.')?.filter { it.isDigit() || it == '.' }?.toDoubleOrNull()
                 if (kg != null && kg in 20.0..350.0) {
                     checkIns.setWeight(LocalDate.now(clock), kg)
-                    notificationId?.let { engine.showSaved(it, context.getString(R.string.n_weight_saved, kg.toString())) }
+                    notificationId?.let { engine.showSaved(it, context.getString(R.string.n_weight_saved, kg.toString()), private = true) }
                 } else {
                     notificationId?.let(engine::cancel)
                 }
@@ -102,11 +103,11 @@ class NotificationActionReceiver : BroadcastReceiver() {
             ACTION_MEDICINE_TAKEN -> {
                 val id = intent.getLongExtra(EXTRA_ID, 0)
                 health.logDose(id, now, zone)
-                engine.cancel(5_000 + (id % 1000).toInt())
+                engine.cancel(NotificationEngine.medicineId(id))
             }
             ACTION_SLEEP_YES -> {
                 val id = intent.getLongExtra(EXTRA_ID, 0)
-                sleep.overlapping(0, Long.MAX_VALUE).firstOrNull { it.id == id }?.let { sleep.update(it.copy(confirmed = true)) }
+                sleep.byId(id)?.let { sleep.update(it.copy(confirmed = true)) }
                 notificationId?.let(engine::cancel)
             }
             ACTION_WORKOUT_YES, ACTION_WORKOUT_NO -> {
@@ -115,15 +116,15 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 if (workout != null) {
                     if (intent.action == ACTION_WORKOUT_YES) workouts.update(workout.copy(confirmed = true)) else workouts.delete(id)
                 }
-                engine.cancel(6_000 + (id % 1000).toInt())
+                engine.cancel(NotificationEngine.workoutId(id))
             }
             ACTION_DISABLE_TYPE, ACTION_KEEP_TYPE -> {
                 engine.setEnabled(key, enabled = intent.action == ACTION_KEEP_TYPE)
-                type?.let { engine.cancel(7_000 + it.ordinal) }
+                type?.let { engine.cancel(NotificationEngine.askId(it)) }
             }
         }
         // Keep today's numbers fresh for the widget and the Today screen.
-        runCatching { aggregate(today()) }
+        runSuspendCatching { aggregate(today()) }
     }
 
     private suspend fun today() = DayClock.today(clock.millis(), clock.zone, settings.settings.first().dayBoundary)

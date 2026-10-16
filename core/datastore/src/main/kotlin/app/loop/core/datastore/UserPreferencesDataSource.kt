@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import app.loop.core.model.ThemeMode
@@ -18,7 +17,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /** Reads and writes [UserSettings] in Preferences DataStore. Unknown or corrupt values fall back to defaults. */
@@ -77,12 +75,6 @@ class UserPreferencesDataSource @Inject constructor(
     /** Null removes the choice, so it follows gender again. */
     suspend fun setCycleTracking(enabled: Boolean?) {
         dataStore.edit { if (enabled == null) it.remove(Keys.CYCLE_TRACKING) else it[Keys.CYCLE_TRACKING] = enabled }
-    }
-
-    suspend fun getLong(key: String): Long? = dataStore.data.first()[longPreferencesKey("state_$key")]
-
-    suspend fun setLong(key: String, value: Long) {
-        dataStore.edit { it[longPreferencesKey("state_$key")] = value }
     }
 
     /** Clears every setting (delete everything). */

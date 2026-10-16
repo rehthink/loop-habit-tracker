@@ -33,4 +33,15 @@ internal object Migrations {
             db.execSQL("CREATE TABLE IF NOT EXISTS `cycle_day` (`date` TEXT NOT NULL, `flow` TEXT, `symptoms` TEXT NOT NULL, `note` TEXT, PRIMARY KEY(`date`))")
         }
     }
+
+    /** v4: raw events get a `tag`; activity transitions and place kinds move there out of `packageName`. */
+    val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `raw_event` ADD COLUMN `tag` TEXT")
+            db.execSQL("UPDATE `raw_event` SET `tag` = `packageName`, `packageName` = NULL WHERE `type` IN $TAGGED_TYPES")
+        }
+    }
+
+    /** Raw event types whose `packageName` held a tag before v4. */
+    private const val TAGGED_TYPES = "('ACTIVITY', 'GEOFENCE_ENTER', 'GEOFENCE_EXIT')"
 }

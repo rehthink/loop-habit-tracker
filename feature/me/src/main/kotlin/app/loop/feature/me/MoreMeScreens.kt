@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
@@ -45,10 +46,12 @@ import app.loop.core.designsystem.component.SecondaryButton
 import app.loop.core.designsystem.component.Stepper
 import app.loop.core.domain.Dispatcher
 import app.loop.core.domain.LoopDispatcher
+import app.loop.core.domain.repository.AppLockGate
 import app.loop.core.domain.repository.BackupRepository
 import app.loop.core.domain.repository.GoalRepository
 import app.loop.core.domain.repository.PermissionRepository
 import app.loop.core.domain.repository.ProfileRepository
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.model.Goal
 import app.loop.core.model.GoalMetric
 import app.loop.core.model.LoopPermission
@@ -171,39 +174,54 @@ internal fun AboutYouScreen(onBack: () -> Unit, viewModel: AboutYouViewModel = h
 
 // --- Backup, export, import, delete ------------------------------------------------------------
 
-data class DataUiState(val working: Boolean = false, val message: String? = null, val deleted: Boolean = false)
+data class DataUiState(val working: Boolean = false, val message: String? = null, val failed: Boolean = false, val deleted: Boolean = false)
 
 @HiltViewModel
 class DataViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val backup: BackupRepository,
+    private val lock: AppLockGate,
     @Dispatcher(LoopDispatcher.IO) private val io: CoroutineDispatcher,
 ) : ViewModel() {
     private val _state = MutableStateFlow(DataUiState())
     val state: StateFlow<DataUiState> = _state.asStateFlow()
 
-    fun export(uri: android.net.Uri) = run {
-        val json = backup.exportJson()
-        withContext(io) { context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(json.toByteArray()) } ?: error("Couldn't open the file") }
+    /** Export and delete hand over or remove everything, so with the lock on they ask for the PIN first. */
+    fun confirm(action: () -> Unit) = lock.confirm(action)
+
+    fun export(uri: android.net.Uri) = run(R.string.data_export_failed) {
+        withContext(io) {
+            val out = context.contentResolver.openOutputStream(uri, "wt") ?: error("Couldn't open the file")
+            out.use { backup.exportTo(it) }
+        }
         context.getString(R.string.data_exported)
     }
 
-    fun import(uri: android.net.Uri) = run {
-        val json = withContext(io) { context.contentResolver.openInputStream(uri)?.use { it.readBytes().decodeToString() } } ?: error("Couldn't read the file")
-        val result = backup.importJson(json)
+    fun import(uri: android.net.Uri) = run(R.string.data_import_failed) {
+        val result = withContext(io) {
+            val input = context.contentResolver.openInputStream(uri) ?: error("Couldn't read the file")
+            input.use { backup.importFrom(it) }
+        }
         context.getString(R.string.data_imported, result.days, result.meals, result.checkIns)
     }
 
     fun deleteEverything() = viewModelScope.launch {
         _state.value = DataUiState(working = true)
-        backup.deleteEverything()
-        _state.value = DataUiState(deleted = true)
+        runSuspendCatching { backup.deleteEverything() }
+            .onSuccess { _state.value = DataUiState(deleted = true) }
+            .onFailure { _state.value = DataUiState(message = context.getString(R.string.data_delete_failed), failed = true) }
     }
 
-    private fun run(block: suspend () -> String) = viewModelScope.launch {
+    /**
+     * Runs an export or import. The import's own messages ("isn't a Loop export", "from a newer
+     * version") are written for people and shown as they are; anything else gets [failed].
+     */
+    private fun run(@StringRes failed: Int, block: suspend () -> String) = viewModelScope.launch {
         _state.value = DataUiState(working = true)
-        val message = runCatching { block() }.getOrElse { context.getString(R.string.data_failed, it.message ?: it::class.simpleName) }
-        _state.value = DataUiState(message = message)
+        _state.value = runSuspendCatching { block() }.fold(
+            onSuccess = { DataUiState(message = it) },
+            onFailure = { e -> DataUiState(message = (e as? IllegalArgumentException)?.message ?: context.getString(failed), failed = true) },
+        )
     }
 }
 
@@ -224,12 +242,17 @@ internal fun DataScreen(onBack: () -> Unit, onEverythingDeleted: () -> Unit, vie
     DetailScreen(stringResource(R.string.data_title), onBack) {
         LoopCard(Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.data_backup_title), style = MaterialTheme.typography.titleSmall)
-            Text(stringResource(R.string.data_backup_body), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                stringResource(R.string.data_backup_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp),
+            )
         }
         LoopCard(Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.data_export_body), style = MaterialTheme.typography.bodyMedium)
             SecondaryButton(stringResource(R.string.data_export), enabled = !state.working, onClick = {
-                exportLauncher.launch("loop-export-${java.time.LocalDate.now()}.json")
+                viewModel.confirm { exportLauncher.launch("loop-export-${java.time.LocalDate.now()}.json") }
             }, modifier = Modifier.padding(top = 12.dp))
             HorizontalDivider(Modifier.padding(vertical = 16.dp), color = MaterialTheme.colorScheme.outlineVariant)
             Text(stringResource(R.string.data_import_body), style = MaterialTheme.typography.bodyMedium)
@@ -237,11 +260,14 @@ internal fun DataScreen(onBack: () -> Unit, onEverythingDeleted: () -> Unit, vie
                 importLauncher.launch(arrayOf("application/json", "text/plain", "application/octet-stream"))
             }, modifier = Modifier.padding(top = 12.dp))
         }
-        state.message?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary) }
+        state.message?.let {
+            Text(it, style = MaterialTheme.typography.bodyMedium, color = if (state.failed) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary)
+        }
         if (state.working) Text(stringResource(R.string.data_working), style = MaterialTheme.typography.bodyMedium)
         LoopCard(Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.data_delete_body), style = MaterialTheme.typography.bodyMedium)
-            TextButton(onClick = { confirmDelete = true }, enabled = !state.working, modifier = Modifier.padding(top = 8.dp)) {
+            // Lined up with the text above rather than indented by the button's padding.
+            TextButton(onClick = { confirmDelete = true }, enabled = !state.working, modifier = Modifier.padding(top = 8.dp).offset(x = (-12).dp)) {
                 Text(stringResource(R.string.data_delete), color = MaterialTheme.colorScheme.error)
             }
         }
@@ -269,7 +295,7 @@ internal fun DataScreen(onBack: () -> Unit, onEverythingDeleted: () -> Unit, vie
             confirmButton = {
                 TextButton(onClick = {
                     confirmDelete = false
-                    viewModel.deleteEverything()
+                    viewModel.confirm { viewModel.deleteEverything() }
                 }) { Text(stringResource(R.string.data_delete_confirm), color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.me_cancel)) } },

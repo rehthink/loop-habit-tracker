@@ -42,6 +42,7 @@ interface SleepRepository {
     suspend fun insert(session: SleepSession): Long
     suspend fun update(session: SleepSession)
     suspend fun delete(id: Long)
+    suspend fun byId(id: Long): SleepSession?
     suspend fun overlapping(from: Long, to: Long): List<SleepSession>
     fun observeOverlapping(from: Long, to: Long): Flow<List<SleepSession>>
 }

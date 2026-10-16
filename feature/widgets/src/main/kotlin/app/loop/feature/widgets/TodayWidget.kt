@@ -36,6 +36,7 @@ import androidx.glance.unit.ColorProvider
 import app.loop.core.domain.repository.SettingsRepository
 import app.loop.core.domain.repository.SummaryRepository
 import app.loop.core.domain.usecase.LogDrinkUseCase
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.model.DayClock
 import app.loop.core.model.DaySummary
 import app.loop.core.model.Routes
@@ -69,7 +70,7 @@ class TodayWidget : GlanceAppWidget() {
     }
 
     companion object {
-        suspend fun refresh(context: Context) = runCatching { TodayWidget().updateAll(context) }
+        suspend fun refresh(context: Context) = runSuspendCatching { TodayWidget().updateAll(context) }
     }
 }
 
@@ -105,15 +106,16 @@ private fun Content(context: Context, summary: DaySummary?) {
 @Composable
 private fun Stat(label: String, value: String, color: Color) {
     Column(GlanceModifier.width(72.dp).padding(horizontal = 2.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold, color = GlanceTheme.colors.onSurface))
+        Text(value, style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Medium, color = GlanceTheme.colors.onSurface))
         Text(label, style = TextStyle(fontSize = 12.sp, color = ColorProvider(color)))
     }
 }
 
 private fun minutes(min: Int) = if (min >= 60) "${min / 60}h ${min % 60}m" else "${min}m"
 
+/** Through Loop's non-exported deep-link alias (see [SystemComponents.DEEP_LINK_ACTIVITY]). */
 private fun openApp(context: Context, route: String): Intent =
-    (context.packageManager.getLaunchIntentForPackage(context.packageName) ?: Intent())
+    Intent().setClassName(context.packageName, SystemComponents.DEEP_LINK_ACTIVITY)
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         .putExtra(SystemComponents.EXTRA_ROUTE, route)
 

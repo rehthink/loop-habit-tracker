@@ -97,6 +97,9 @@ interface SleepSessionDao {
     @Query("SELECT * FROM sleep_session WHERE `end` > :from AND start < :to ORDER BY start")
     fun observeOverlapping(from: Long, to: Long): Flow<List<SleepSessionEntity>>
 
+    @Query("SELECT * FROM sleep_session WHERE id = :id")
+    suspend fun byId(id: Long): SleepSessionEntity?
+
     @Query("SELECT * FROM sleep_session ORDER BY start")
     suspend fun all(): List<SleepSessionEntity>
 
@@ -157,6 +160,12 @@ interface MealDao {
 
     @Query("SELECT * FROM meal ORDER BY time DESC LIMIT :limit")
     suspend fun recent(limit: Int): List<MealEntity>
+
+    @Query("SELECT photoUri FROM meal WHERE id = :mealId")
+    suspend fun photoOf(mealId: Long): String?
+
+    @Query("SELECT photoUri FROM meal WHERE photoUri IS NOT NULL")
+    suspend fun allPhotoUris(): List<String>
 
     @Query("SELECT COUNT(*) FROM meal")
     suspend fun count(): Int

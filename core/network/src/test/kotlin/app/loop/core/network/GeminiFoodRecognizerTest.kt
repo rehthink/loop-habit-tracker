@@ -74,6 +74,14 @@ class GeminiFoodRecognizerTest {
     }
 
     @Test
+    fun `a 400 is the key's fault only when Google says the key is invalid`() = runTest {
+        respond(400, """{"error":{"code":400,"status":"INVALID_ARGUMENT","details":[{"reason":"API_KEY_INVALID"}]}}""")
+        assertEquals(FoodRecognizer.Result.Failed("key"), recognizer.recognize(byteArrayOf(1)))
+        respond(400, """{"error":{"code":400,"status":"INVALID_ARGUMENT","message":"Image too large"}}""")
+        assertEquals(FoodRecognizer.Result.Failed("http 400"), recognizer.recognize(byteArrayOf(1)))
+    }
+
+    @Test
     fun `no network is offline`() = runTest {
         server.close()
         assertEquals(FoodRecognizer.Result.Offline, recognizer.recognize(byteArrayOf(1)))

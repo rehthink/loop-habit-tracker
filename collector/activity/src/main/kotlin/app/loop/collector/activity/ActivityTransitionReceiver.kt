@@ -39,7 +39,7 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
             RawEvent(
                 type = RawEventType.ACTIVITY,
                 value = e.activityType.toDouble(),
-                packageName = if (e.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) Activities.ENTER else Activities.EXIT,
+                tag = if (e.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) Activities.ENTER else Activities.EXIT,
                 startTime = now - (nowElapsed - e.elapsedRealTimeNanos) / 1_000_000,
                 zoneId = zone,
             )
@@ -48,7 +48,7 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
         scope.launch {
             try {
                 rawEvents.insertAll(events)
-                events.filter { it.packageName == Activities.EXIT }.forEach { exit -> maybeLogWorkout(exit) }
+                events.filter { it.tag == Activities.EXIT }.forEach { exit -> maybeLogWorkout(exit) }
             } finally {
                 pending.finish()
             }
@@ -59,7 +59,7 @@ class ActivityTransitionReceiver : BroadcastReceiver() {
         val activity = exit.value?.toInt() ?: return
         val type = Activities.workoutType(activity) ?: return
         val recent = rawEvents.ofType(RawEventType.ACTIVITY, exit.startTime - 4 * 60 * 60_000L, exit.startTime + 1)
-        val enter = recent.lastOrNull { it.value?.toInt() == activity && it.packageName == Activities.ENTER } ?: return
+        val enter = recent.lastOrNull { it.value?.toInt() == activity && it.tag == Activities.ENTER } ?: return
         val minutes = (exit.startTime - enter.startTime) / 60_000
         if (minutes < Activities.MIN_WORKOUT_MINUTES) return
         // Auto-detected movement is confirmed straight away; only guesses (gym visits) ask first.

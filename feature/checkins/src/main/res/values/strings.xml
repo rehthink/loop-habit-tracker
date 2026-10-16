@@ -54,4 +54,5 @@
     <string name="wt_empty">No weigh-ins yet. Once a week is plenty.</string>
     <string name="wt_change">%1$s kg since %2$s</string>
     <string name="wt_kg">%1$s kg</string>
+    <string name="ci_mood_missing">Pick how you\'re feeling first.</string>
 </resources>

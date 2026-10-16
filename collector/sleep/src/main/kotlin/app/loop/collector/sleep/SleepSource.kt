@@ -14,6 +14,8 @@ import app.loop.core.domain.repository.RawEventRepository
 import app.loop.core.domain.repository.SleepReader
 import app.loop.core.domain.repository.SleepRepository
 import app.loop.core.domain.repository.SettingsRepository
+import app.loop.core.domain.runSuspendCatching
+import app.loop.core.domain.tracker.RegistrationGate
 import app.loop.core.domain.tracker.TrackerSource
 import app.loop.core.model.DailySummaryPatch
 import app.loop.core.model.DayClock
@@ -43,6 +45,7 @@ class SleepSource @Inject constructor(
     private val state: CollectorStateRepository,
     private val notifier: ConfirmationNotifier,
     private val settings: SettingsRepository,
+    private val gate: RegistrationGate,
     private val clock: Clock,
 ) : TrackerSource, SleepReader {
     override val id = TrackerId.SLEEP
@@ -59,12 +62,16 @@ class SleepSource @Inject constructor(
     private suspend fun registerSleepApi() {
         val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) Manifest.permission.ACTIVITY_RECOGNITION
         else "com.google.android.gms.permission.ACTIVITY_RECOGNITION"
-        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) return
-        runCatching {
+        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+            gate.invalidate(GATE)
+            return
+        }
+        if (gate.isCurrent(GATE, REQUEST)) return
+        runSuspendCatching {
             ActivityRecognition.getClient(context)
                 .requestSleepSegmentUpdates(pendingIntent(context), SleepSegmentRequest.getDefaultSleepSegmentRequest())
                 .await()
-        }
+        }.onSuccess { gate.markRegistered(GATE, REQUEST) }
     }
 
     /** Once per morning, after waking, ask "You slept 6 h 40 m. Right?" */
@@ -104,6 +111,8 @@ class SleepSource @Inject constructor(
         private const val ASKED_KEY = "sleep_confirm_asked_day"
         private const val AWAKE_FOR_MS = 30 * 60_000L
         private const val REQUEST_CODE = 4103
+        private const val GATE = "sleep_segments"
+        private const val REQUEST = "default"
 
         internal fun pendingIntent(context: Context): PendingIntent = PendingIntent.getBroadcast(
             context,

@@ -11,6 +11,8 @@ import app.loop.core.domain.repository.PlacesRepository
 import app.loop.core.domain.repository.SettingsRepository
 import app.loop.core.domain.repository.SummaryRepository
 import app.loop.core.domain.repository.WorkoutRepository
+import app.loop.core.domain.runSuspendCatching
+import app.loop.core.domain.usecase.AggregateTodayUseCase
 import app.loop.core.domain.usecase.RefreshUseCase
 import app.loop.core.model.DayClock
 import app.loop.core.model.DaySummary
@@ -64,6 +66,7 @@ class MovementViewModel @Inject constructor(
     private val geofences: GeofenceRegistrar,
     private val settings: SettingsRepository,
     private val refresh: RefreshUseCase,
+    private val aggregateToday: AggregateTodayUseCase,
     private val heartRates: HeartRateReader,
     private val clock: Clock,
 ) : ViewModel() {
@@ -99,7 +102,7 @@ class MovementViewModel @Inject constructor(
 
     fun onResume() = viewModelScope.launch {
         permissions.refresh()
-        runCatching { refresh() }
+        runSuspendCatching { refresh(RefreshUseCase.Mode.QUICK) }
         heartRate.value = heartRates.bpmRange(java.time.LocalDate.now(clock))
     }
 
@@ -109,7 +112,7 @@ class MovementViewModel @Inject constructor(
     fun addWorkout(type: WorkoutType, minutes: Int) = viewModelScope.launch {
         val end = clock.millis()
         workouts.insert(Workout(type = type, start = end - minutes * 60_000L, end = end, zoneId = clock.zone.id, source = WorkoutSource.USER, confirmed = true))
-        refresh()
+        aggregateToday()
     }
 
     fun savePlaceHere(kind: PlaceKind) = viewModelScope.launch {

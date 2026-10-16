@@ -9,7 +9,7 @@ class ActivityMathTest {
     private val min = 60_000L
     private fun ev(activity: Int, enter: Boolean, m: Long) = RawEvent(
         type = RawEventType.ACTIVITY, value = activity.toDouble(),
-        packageName = if (enter) Activities.ENTER else Activities.EXIT, startTime = m * min, zoneId = "UTC",
+        tag = if (enter) Activities.ENTER else Activities.EXIT, startTime = m * min, zoneId = "UTC",
     )
 
     @Test

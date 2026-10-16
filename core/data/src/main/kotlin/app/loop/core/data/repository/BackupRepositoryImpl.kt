@@ -25,28 +25,35 @@ import app.loop.core.database.entity.SleepSessionEntity
 import app.loop.core.database.entity.WaterLogEntity
 import app.loop.core.database.entity.WeightLogEntity
 import app.loop.core.database.entity.WorkoutEntity
+import app.loop.core.datastore.CollectorStateDataSource
 import app.loop.core.datastore.SecureStore
 import app.loop.core.datastore.UserPreferencesDataSource
 import app.loop.core.domain.Dispatcher
 import app.loop.core.domain.LoopDispatcher
 import app.loop.core.domain.repository.BackupRepository
 import app.loop.core.domain.repository.ImportResult
+import app.loop.core.model.RawEventType
 import app.loop.core.model.ThemeMode
 import app.loop.core.model.TrackerId
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 import java.time.Clock
 import java.time.LocalTime
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.encodeToStream
 
 /**
  * Versioned JSON export. Bump [FORMAT_VERSION] whenever the shape changes and keep reading every
- * older version in [importJson]. Secrets (PIN, API key) are never exported.
+ * older version in [importFrom]. Secrets (PIN, API key) and meal photos are never exported. The
+ * file isn't encrypted, and the export screen says so.
  */
 @Serializable
 internal data class LoopExport(
@@ -84,6 +91,8 @@ internal data class LoopExport(
     }
 }
 
+private val TAGGED_BEFORE_V4 = setOf(RawEventType.ACTIVITY, RawEventType.GEOFENCE_ENTER, RawEventType.GEOFENCE_EXIT)
+
 @Serializable
 internal data class ExportSettings(
     val themeMode: String,
@@ -99,11 +108,14 @@ internal data class ExportSettings(
     val cycleTracking: Boolean? = null,
 )
 
+@OptIn(ExperimentalSerializationApi::class)
 internal class BackupRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val db: LoopDatabase,
     private val preferences: UserPreferencesDataSource,
+    private val collectorState: CollectorStateDataSource,
     private val secureStore: SecureStore,
+    private val photos: MealPhotoFiles,
     private val clock: Clock,
     @Dispatcher(LoopDispatcher.IO) private val io: CoroutineDispatcher,
 ) : BackupRepository {
@@ -113,7 +125,7 @@ internal class BackupRepositoryImpl @Inject constructor(
         explicitNulls = false
     }
 
-    override suspend fun exportJson(): String = withContext(io) {
+    override suspend fun exportTo(out: OutputStream) = withContext(io) {
         val s = preferences.settings.first()
         val export = LoopExport(
             exportedAt = clock.millis(),
@@ -153,12 +165,14 @@ internal class BackupRepositoryImpl @Inject constructor(
             customFoods = db.customFoodDao().all(),
             cycleDays = db.cycleDayDao().all(),
         )
-        json.encodeToString(LoopExport.serializer(), export)
+        val buffered = out.buffered()
+        json.encodeToStream(LoopExport.serializer(), export, buffered)
+        buffered.flush()
     }
 
-    override suspend fun importJson(json: String): ImportResult = withContext(io) {
+    override suspend fun importFrom(input: InputStream): ImportResult = withContext(io) {
         val export = try {
-            this@BackupRepositoryImpl.json.decodeFromString(LoopExport.serializer(), json)
+            json.decodeFromStream(LoopExport.serializer(), input.buffered())
         } catch (e: Exception) {
             throw IllegalArgumentException("This isn't a Loop export file.", e)
         }
@@ -168,7 +182,7 @@ internal class BackupRepositoryImpl @Inject constructor(
         db.withTransaction {
             db.clearAllTables()
             export.profile?.let { db.profileDao().upsert(it) }
-            db.rawEventDao().insertAll(export.rawEvents)
+            db.rawEventDao().insertAll(export.rawEvents.map { if (export.schemaVersion < 4) it.withTagMovedOut() else it })
             db.sleepSessionDao().insertAll(export.sleep)
             db.workoutDao().insertAll(export.workouts)
             db.mealDao().insertMeals(export.meals)
@@ -209,17 +223,18 @@ internal class BackupRepositoryImpl @Inject constructor(
         preferences.setOnboardingComplete(true)
     }
 
+    /** Before schema v4, activity transitions and place kinds were stored in `packageName`. */
+    private fun RawEventEntity.withTagMovedOut(): RawEventEntity =
+        if (tag == null && type in TAGGED_BEFORE_V4) copy(tag = packageName, packageName = null) else this
+
     override suspend fun deleteEverything() = withContext(io) {
         db.clearAllTables()
         preferences.clear()
+        collectorState.clear()
         secureStore.clear()
-        File(context.filesDir, MEAL_PHOTO_DIR).deleteRecursively()
+        photos.deleteAll()
         context.cacheDir.deleteRecursively()
         Unit
     }
 
-    companion object {
-        /** Meal photos live here (app-private, not backed up). */
-        const val MEAL_PHOTO_DIR = "meal_photos"
-    }
 }

@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+// Release signing comes from ~/.gradle/gradle.properties, never from the repo (see docs/release.md).
+val releaseStoreFile = providers.gradleProperty("LOOP_RELEASE_STORE_FILE").orNull
+
 android {
     namespace = "app.loop"
 
@@ -13,11 +16,24 @@ android {
         versionName = "0.1.0"
     }
 
+    signingConfigs {
+        if (releaseStoreFile != null) {
+            create("release") {
+                storeFile = file(releaseStoreFile)
+                storePassword = providers.gradleProperty("LOOP_RELEASE_STORE_PASSWORD").get()
+                keyAlias = providers.gradleProperty("LOOP_RELEASE_KEY_ALIAS").get()
+                keyPassword = providers.gradleProperty("LOOP_RELEASE_KEY_PASSWORD").get()
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Unsigned on machines without the keystore.
+            signingConfig = signingConfigs.findByName("release")
         }
     }
 }

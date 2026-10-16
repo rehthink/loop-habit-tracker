@@ -8,6 +8,7 @@ import app.loop.core.domain.repository.PermissionRepository
 import app.loop.core.domain.repository.SettingsRepository
 import app.loop.core.domain.usecase.AggregateDayUseCase
 import app.loop.core.domain.usecase.AggregateTodayUseCase
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.model.DayClock
 import app.loop.core.model.HealthIssue
 import app.loop.core.model.LoopPermission
@@ -77,7 +78,7 @@ class CheckInViewModel @Inject constructor(
     }
 
     private suspend fun today() = DayClock.today(clock.millis(), clock.zone, settings.settings.first().dayBoundary)
-    private suspend fun refreshToday() = runCatching { aggregate(today()) }
+    private suspend fun refreshToday() = runSuspendCatching { aggregate(today()) }
 }
 
 data class HealthUiState(

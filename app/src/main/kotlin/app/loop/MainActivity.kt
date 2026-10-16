@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.WindowManager
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -24,9 +25,11 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.loop.core.designsystem.theme.LoopTheme
+import app.loop.core.model.Routes
 import app.loop.core.model.SystemComponents
 import app.loop.core.model.ThemeMode
 import app.loop.feature.applock.AppLockManager
+import app.loop.feature.applock.LockResetDialog
 import app.loop.feature.applock.LockScreen
 import app.loop.feature.applock.LockState
 import app.loop.ui.LoopApp
@@ -63,15 +66,21 @@ class MainActivity : FragmentActivity() {
                 onDispose { }
             }
             LaunchedEffect(ready.appLockEnabled) {
-                // Keep app content out of the recent-apps preview while the lock is on.
+                // Keep app content out of the recent-apps preview while the lock is on. Before
+                // Android 13 the only way is FLAG_SECURE, which also blocks screenshots.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     setRecentsScreenshotEnabled(!ready.appLockEnabled)
+                } else if (ready.appLockEnabled) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                } else {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                 }
             }
+            val lockReset by lockManager.lockReset.collectAsStateWithLifecycle()
 
             LoopTheme(darkTheme = dark) {
                 Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    val locked = lockState == LockState.LOCKED
+                    val locked = lockState == LockState.LOCKED || lockState == LockState.CONFIRMING
                     Box(Modifier.fillMaxSize()) {
                         // The app stays composed under the lock so you return to where you were;
                         // while locked it's hidden from accessibility services too.
@@ -83,7 +92,16 @@ class MainActivity : FragmentActivity() {
                                 }
                             }
                         }
-                        if (locked) LockScreen()
+                        if (locked) LockScreen(confirming = lockState == LockState.CONFIRMING)
+                    }
+                    if (lockReset && !locked) {
+                        LockResetDialog(
+                            onSetPin = {
+                                lockManager.lockResetShown()
+                                viewModel.openRoute(Routes.APP_LOCK, null)
+                            },
+                            onDismiss = lockManager::lockResetShown,
+                        )
                     }
                 }
             }
@@ -95,9 +113,13 @@ class MainActivity : FragmentActivity() {
         handleIntent(intent)
     }
 
-    /** Notification and widget taps carry a route and the notification's key. */
+    /**
+     * Notification and widget taps carry a route and the notification's key. They come through
+     * the non-exported deep-link alias; the same extras on an intent from another app are ignored.
+     */
     private fun handleIntent(intent: Intent?) {
         intent ?: return
+        if (intent.component?.className != SystemComponents.DEEP_LINK_ACTIVITY) return
         viewModel.openRoute(
             intent.getStringExtra(SystemComponents.EXTRA_ROUTE),
             intent.getStringExtra(SystemComponents.EXTRA_NOTIFICATION_KEY),

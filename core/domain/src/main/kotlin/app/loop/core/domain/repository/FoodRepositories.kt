@@ -40,6 +40,11 @@ interface MealRepository {
     fun observePendingPhotos(): Flow<List<PendingPhoto>>
 }
 
+/** Queues "analyse later" meal photos to run once online. Implemented by the food feature. */
+interface PhotoAnalysisScheduler {
+    fun enqueue()
+}
+
 /** Recognises dishes in a meal photo. Swapping the model is a one-class change. */
 interface FoodRecognizer {
     sealed interface Result {

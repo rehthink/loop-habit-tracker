@@ -2,6 +2,7 @@ package app.loop.core.domain.usecase
 
 import app.loop.core.domain.repository.DrinkRepository
 import app.loop.core.domain.repository.SettingsRepository
+import app.loop.core.domain.runSuspendCatching
 import app.loop.core.model.DayClock
 import app.loop.core.model.DrinkKind
 import java.time.Clock
@@ -38,6 +39,6 @@ class LogDrinkUseCase @Inject constructor(
 
     private suspend fun refreshToday() {
         val boundary = settings.settings.first().dayBoundary
-        runCatching { aggregate(DayClock.today(clock.millis(), clock.zone, boundary)) }
+        runSuspendCatching { aggregate(DayClock.today(clock.millis(), clock.zone, boundary)) }
     }
 }
