@@ -42,8 +42,8 @@ debug build, install the release APK, then import the file.
 [install.md](install.md) is a step-by-step guide for someone installing the APK on their own
 phone. It covers unknown sources, Play Protect, restricted settings and updates.
 
-Don't commit APKs (`*.apk` is gitignored). To share one, attach it to a GitHub release
-(Releases › Draft a new release) or send the file directly.
+Signed release APKs are committed to `dist/` as `loop-<versionName>.apk`, the only APKs not
+gitignored. After each release build, copy `app/build/outputs/apk/release/app-release.apk` there.
 
 ## Google Play
 
