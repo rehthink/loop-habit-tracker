@@ -41,8 +41,8 @@ Verified at the end of the build (before the second review):
 3. The food table is a hand-built IFCT-style list of 183 dishes, not an exact IFCT import.
    `tools/build_food_db.py` can merge an Open Food Facts export for packaged foods with barcodes.
 4. The Gemini model is `gemini-3.8-flash` (free tier), set in `core/network/.../GeminiConfig.kt`.
-5. The code is on GitHub (`rehthink/loop-habit-tracker`). The second review's changes are on the
-   `review-fixes` branch (see "Second review" below).
+5. The code is on GitHub (`rehthink/loop-habit-tracker`, private), all on `main`, including the
+   second review's changes (see "Second review" below) and the signed APK in `dist/`.
 6. Release signing is set up. The keystore and its passwords live outside the repo. See
    [release.md](release.md) for where they are, how to build, and how to back them up.
 

@@ -9,6 +9,12 @@ for meal photos, using the user's own free API key.
 - Kotlin 2.4, AGP 9.4, Gradle 9.8, Compose + Material 3, Hilt, Room, DataStore, WorkManager,
   CameraX, ML Kit, Health Connect, Play services location, Glance, Vico, Retrofit
 
+## Download
+
+The latest signed release APK is **[dist/loop-0.1.0.apk](dist/loop-0.1.0.apk)** (version 0.1.0,
+Android 9 or newer). To install it on a phone, follow [docs/install.md](docs/install.md). For how
+release builds are made and signed, see [docs/release.md](docs/release.md).
+
 ## Build and run
 
 Needs JDK 17+ (built with JDK 21) and the Android SDK.
@@ -28,3 +34,5 @@ Food photos need a free Gemini key from Google AI Studio: Me › Food photo key.
 - [docs/HANDOFF.md](docs/HANDOFF.md): status, architecture, modules, conventions
 - `docs/phase-*.md`: what each phase built, how to test it, known limits
 - [docs/play-store-declarations.md](docs/play-store-declarations.md): Play Console text
+- [docs/release.md](docs/release.md): signing key, release builds
+- [docs/install.md](docs/install.md): installing the APK on a phone
